@@ -1,1 +1,1 @@
-APPL_COBJS += 
+APPL_COBJS += runner.o calibration.o
