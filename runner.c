@@ -33,10 +33,15 @@ void Runner_init(Runner* self) {
 	ev3_sensor_config(GYRO_SENSOR_P, GYRO_SENSOR);
 }
 
+/*
+ * 走行プログラム開始メソッド
+ *
+ * @param self 自分のポインタ
+ */
 void Runner_start(Runner* self) {
 	/* キャリブレーション開始 */
 	Calibration_init(&calibration);
 	Calibration_start(&calibration);
 
-	/* 走行開始 */
+	/* TODO:走行開始 */
 }

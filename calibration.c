@@ -12,11 +12,21 @@
 
 #define TAIL_ANGLE_CALIB (-90) /* キャリブレーション時テール角度 */
 
+/*
+ * 初期化メソッド
+ *
+ * @param self 自分のポインタ
+ */
 void Calibration_init(Calibration* self) {
 	ev3_motor_reset_counts(TAIL_MOTOR_P); /* テールモーター初期化 */
 	ev3_color_sensor_get_reflect(COLOR_SENSOR_P); /* 反射率モード初回起動 */
 }
 
+/*
+ * キャリブレーション開始メソッド
+ *
+ * @param self 自分のポインタ
+ */
 void Calibration_start(Calibration* self) {
 	int reflect = -1; /* 反射光値 */
 	char m[20]; /* 画面出力用 */
