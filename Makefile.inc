@@ -1,1 +1,1 @@
-APPL_COBJS += runner.o calibration.o trigger.o touchsensor.o lcd.o
+APPL_COBJS += runner.o calibration.o trigger.o touchsensor.o lcd.o tailmotor.o

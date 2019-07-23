@@ -22,7 +22,7 @@ Trigger trigger;
  * 
  * @param self 自分のポインタ
  */
-void Runner_init(Runner* self) {
+void Runner_init() {
 	/* モーターポート設定 */
 	ev3_motor_config(LEFT_MOTOR_P, LARGE_MOTOR);
 	ev3_motor_config(RIGHT_MOTOR_P, LARGE_MOTOR);
@@ -42,7 +42,7 @@ void Runner_init(Runner* self) {
  *
  * @param self 自分のポインタ
  */
-void Runner_start(Runner* self) {
+void Runner_start() {
 	/* キャリブレーション開始 */
 	Calibration_init(&calibration);
 	Calibration_start(&calibration);
