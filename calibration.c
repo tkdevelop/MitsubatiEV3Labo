@@ -53,6 +53,10 @@ void Calibration_start(Calibration* self) {
 			ev3_speaker_play_tone(NOTE_C5, 1000);
 			break;
 		}
-		tslp_tsk(100);
+		tslp_tsk(10);
 	}
+
+	ev3_motor_reset_counts(TAIL_MOTOR_P); /* テールモーター初期化 */
+
+	tslp_tsk(500);
 }

@@ -2,6 +2,7 @@
 #include "runner.h"
 #include "calibration.h"
 #include "start.h"
+#include "linetrace.h"
 
 Calibration calibration;
 
@@ -51,5 +52,11 @@ void Runner_start() {
 	Start_start();
 
 	/* 走行 */
+	Linetrace_init();
+	Linetrace_run();
 
+	/* モーター出力停止 */
+	ev3_motor_stop(LEFT_MOTOR_P, false);
+	ev3_motor_stop(RIGHT_MOTOR_P, false);
+	ev3_motor_stop(TAIL_MOTOR_P, false);
 }

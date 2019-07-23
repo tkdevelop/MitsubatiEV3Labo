@@ -11,7 +11,6 @@
  */
 void TailControl_control(signed int angle) {
 	signed int pwm = (signed int)((angle - ev3_motor_get_counts(TAIL_MOTOR_P))*P_GAIN); /* ”ä—á§Œä */
-	
 	/* PWMo—Í–O˜aˆ— */
 	if (pwm > PWM_ABS_MAX)
 	{

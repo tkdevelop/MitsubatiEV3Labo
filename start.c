@@ -6,8 +6,8 @@
 #define TOUCH_SENSOR_P EV3_PORT_1 /* タッチセンサーポート */
 
 #define START_CMD 1 /* リモートスタート用コマンド */
-static FILE* bt_file; /* シリアルポートのファイル */
-static int bt_cmd; /* 受信したコマンド */
+static FILE* bt_file = NULL; /* シリアルポートのファイル */
+static int bt_cmd = 0; /* 受信したコマンド */
 
 #define TAIL_ANGLE_STAND_UP 95 /* 完全停止時の角度[度] */
 #define TAIL_ANGLE_START  (TAIL_ANGLE_STAND_UP + 3) /* スタート時の角度 */
@@ -17,15 +17,15 @@ static int bt_cmd; /* 受信したコマンド */
  * スタート初期化メソッド
  */
 void Start_init() {
-	ev3_motor_reset_counts(TAIL_MOTOR_P); /* テールモーター初期化 */
+	Start_bt_connect(); /* Bluetooth通信接続 */
+	act_tsk(START_BT_RECV_TASK); /* Bluetooth受信メソッド開始 */
 }
 
 /*
  * 走行待機メソッド
  */
 void Start_wait() {
-	Start_bt_connect(); /* Bluetooth通信接続 */
-	act_tsk(START_BT_RECV_TASK); /* Bluetooth受信メソッド開始 */
+	ev3_motor_reset_counts(TAIL_MOTOR_P); /* テールモーターリセット */
 
 	/* リモートスタート又はタッチセンサーからスタート信号があるまで待機 */
 	while (1) {
@@ -43,6 +43,7 @@ void Start_wait() {
 		tslp_tsk(10);
 	}
 
+	ter_tsk(START_BT_RECV_TASK); /* Bluetooth信号受信タスク終了 */
 	Start_bt_close(); /* Bluetooth通信終了 */
 }
 
@@ -76,7 +77,7 @@ void Start_bt_connect() {
 }
 
 /*
- * Bluetooth受信メソッド
+ * Bluetooth信号受信タスク
  *
  * @param self 自分のポインタ
  */
