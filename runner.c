@@ -2,6 +2,7 @@
 #include "runner.h"
 #include "calibration.h"
 #include "trigger.h"
+#include "lcd.h"
 
 Calibration calibration;
 Trigger trigger;
@@ -17,7 +18,7 @@ Trigger trigger;
 #define GYRO_SENSOR_P EV3_PORT_4
 
 /*
- * 初期化メソッド
+ * 走行体初期化メソッド
  * 
  * @param self 自分のポインタ
  */
@@ -31,6 +32,9 @@ void Runner_init(Runner* self) {
 	ev3_sensor_config(COLOR_SENSOR_P, COLOR_SENSOR);
 	ev3_sensor_config(TOUCH_SENSOR_P, TOUCH_SENSOR);
 	ev3_sensor_config(GYRO_SENSOR_P, GYRO_SENSOR);
+
+	/* LCD画面初期化 */
+	Lcd_init();
 }
 
 /*

@@ -10,7 +10,7 @@ static FILE* bt_file; /* シリアルポートのファイル */
 static int bt_cmd; /* 受信したコマンド */
 
 /*
- * 初期化メソッド
+ * トリガー初期化メソッド
  *
  * @param self 自分のポインタ
  */
@@ -44,6 +44,7 @@ void Trigger_wait(Trigger* self) {
 		tslp_tsk(10);
 	}
 
+	ev3_lcd_draw_string("finished", 0, 110);
 	Trigger_bt_close(); /* Bluetooth通信終了 */
 }
 
@@ -80,5 +81,5 @@ void Trigger_bt_recv_task(intptr_t unused) {
  * Bluetooth通信終了メソッド
  */
 void Trigger_bt_close() {
-	fclose(bt_file);
+	fclose(bt_file); //接続終了
 }
