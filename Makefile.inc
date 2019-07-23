@@ -1,1 +1,1 @@
-APPL_COBJS += runner.o calibration.o start.o lcd.o tailcontrol.o
+APPL_COBJS += runner.o calibration.o start.o tailcontrol.o

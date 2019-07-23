@@ -2,7 +2,6 @@
 #include "runner.h"
 #include "calibration.h"
 #include "start.h"
-#include "lcd.h"
 
 Calibration calibration;
 
@@ -33,7 +32,7 @@ void Runner_init() {
 	ev3_sensor_config(GYRO_SENSOR_P, GYRO_SENSOR);
 
 	/* LCD画面初期化 */
-	Lcd_init();
+	ev3_lcd_set_font(EV3_FONT_MEDIUM); /* ミディアムフォント */
 }
 
 /*
