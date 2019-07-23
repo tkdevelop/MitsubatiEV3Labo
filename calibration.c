@@ -1,6 +1,6 @@
 #include "ev3api.h"
 #include "calibration.h"
-#include "tailmotor.h"
+#include "tailcontrol.h"
 
 #define TAIL_MOTOR_P EV3_PORT_A /* テールモーターポート */
 #define COLOR_SENSOR_P EV3_PORT_3 /* カラーセンサーポート */
@@ -27,7 +27,7 @@ void Calibration_start(Calibration* self) {
 	char m[20]; /* 画面出力用 */
 
 	while (1) {
-		TailMotor_control(TAIL_ANGLE_CALIB); /* テール制御 */
+		TailControl_control(TAIL_ANGLE_CALIB); /* テール制御 */
 
 		reflect = ev3_color_sensor_get_reflect(COLOR_SENSOR_P); /* 反射光値取得 */
 		sprintf(m, "reflect : %d", reflect);

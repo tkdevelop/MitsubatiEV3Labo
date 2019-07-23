@@ -1,5 +1,5 @@
 #include "ev3api.h"
-#include "tailmotor.h"
+#include "tailcontrol.h"
 
 #define TAIL_MOTOR_P EV3_PORT_A /* テールモーターポート */
 
@@ -9,7 +9,7 @@
 /*
  * テール駆動メソッド
  */
-void TailMotor_control(signed int angle) {
+void TailControl_control(signed int angle) {
 	signed int pwm = (signed int)((angle - ev3_motor_get_counts(TAIL_MOTOR_P))*P_GAIN); /* 比例制御 */
 	
 	/* PWM出力飽和処理 */

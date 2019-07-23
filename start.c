@@ -1,6 +1,6 @@
 #include "ev3api.h"
 #include "start.h"
-#include "tailmotor.h"
+#include "tailcontrol.h"
 
 #define TAIL_MOTOR_P EV3_PORT_A /* テールモーターポート */
 #define TOUCH_SENSOR_P EV3_PORT_1 /* タッチセンサーポート */
@@ -15,8 +15,6 @@ static int bt_cmd; /* 受信したコマンド */
 
 /*
  * スタート初期化メソッド
- *
- * @param self 自分のポインタ
  */
 void Start_init() {
 	ev3_motor_reset_counts(TAIL_MOTOR_P); /* テールモーター初期化 */
@@ -24,8 +22,6 @@ void Start_init() {
 
 /*
  * 走行待機メソッド
- *
- * @param self 自分のポインタ
  */
 void Start_wait() {
 	Start_bt_connect(); /* Bluetooth通信接続 */
@@ -34,7 +30,7 @@ void Start_wait() {
 	/* リモートスタート又はタッチセンサーからスタート信号があるまで待機 */
 	while (1) {
 
-		TailMotor_control(TAIL_ANGLE_STAND_UP); /* テールモーター制御 */
+		TailControl_control(TAIL_ANGLE_STAND_UP); /* テールモーター制御 */
 
 		if (bt_cmd == START_CMD) {
 			break;
@@ -50,12 +46,15 @@ void Start_wait() {
 	Start_bt_close(); /* Bluetooth通信終了 */
 }
 
+/*
+ * 走行開始メソッド
+ */
 void Start_start() {
 	int start_delay_counter = 0; /* スタート遅延カウンタ */
 
 	/* スタート遅延 */
 	while (1) {
-		TailMotor_control(TAIL_ANGLE_START); /* テールモータ制御 */
+		TailControl_control(TAIL_ANGLE_START); /* テールモータ制御 */
 
 		start_delay_counter++;
 
