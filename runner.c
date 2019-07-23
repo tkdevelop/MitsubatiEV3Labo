@@ -1,10 +1,10 @@
 #include "ev3api.h"
 #include "runner.h"
 #include "calibration.h"
-//#include "run.h"
+#include "trigger.h"
 
 Calibration calibration;
-//Run run;
+Trigger trigger;
 
 /* モーターポート */
 #define LEFT_MOTOR_P EV3_PORT_C
@@ -23,7 +23,7 @@ Calibration calibration;
  */
 void Runner_init(Runner* self) {
 	/* モーターポート設定 */
-	ev3_motor_config(LEFT_MOTOR_P,LARGE_MOTOR);
+	ev3_motor_config(LEFT_MOTOR_P, LARGE_MOTOR);
 	ev3_motor_config(RIGHT_MOTOR_P, LARGE_MOTOR);
 	ev3_motor_config(TAIL_MOTOR_P, LARGE_MOTOR);
 
@@ -43,5 +43,9 @@ void Runner_start(Runner* self) {
 	Calibration_init(&calibration);
 	Calibration_start(&calibration);
 
-	/* TODO:走行開始 */
+	/* 走行待機開始 */
+	Trigger_init(&trigger);
+	Trigger_wait(&trigger);
+
+
 }
