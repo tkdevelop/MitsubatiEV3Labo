@@ -37,7 +37,7 @@ void Start_wait() {
 			break;
 		}
 
-		if (true == TouchSensor_is_pressed()) {
+		if (TouchSensor_is_pressed()) {
 			break;
 		}
 
