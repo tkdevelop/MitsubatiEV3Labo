@@ -1,7 +1,7 @@
 #include "ev3api.h"
 #include "leftmotor.h"
 
-#define LEFT_MOTOR_P EV3_PORT_C
+#define LEFT_MOTOR_P EV3_PORT_C /* 左モーターポート */
 
 /*
  * 左モーターリセットメソッド
