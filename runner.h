@@ -3,5 +3,6 @@
 
 void Runner_init();
 void Runner_start();
+void Runner_battery_task();
 
 #endif

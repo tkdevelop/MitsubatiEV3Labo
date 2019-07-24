@@ -3,6 +3,7 @@
 #include "calibration.h"
 #include "start.h"
 #include "linetrace.h"
+#include "battery.h"
 
 Calibration calibration;
 
@@ -34,6 +35,8 @@ void Runner_init() {
 
 	/* LCD画面初期化 */
 	ev3_lcd_set_font(EV3_FONT_MEDIUM); /* ミディアムフォント */
+
+	act_tsk(RUNNER_BATTERY_TASK); /* バッテリー残量表示タスク開始 */
 }
 
 /*
@@ -59,4 +62,15 @@ void Runner_start() {
 	ev3_motor_stop(LEFT_MOTOR_P, false);
 	ev3_motor_stop(RIGHT_MOTOR_P, false);
 	ev3_motor_stop(TAIL_MOTOR_P, false);
+
+	ter_tsk(RUNNER_BATTERY_TASK); /* バッテリー残量表示タスク終了 */
+}
+
+/*
+ * バッテリー残量表示タスク
+ */
+void Runner_battery_task() {
+	while (1) {
+		Battery_display(); /* バッテリー残量表示 */
+	}
 }
