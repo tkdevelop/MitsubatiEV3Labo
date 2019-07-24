@@ -2,6 +2,9 @@
 #include "linetrace.h"
 #include "balancer.h"
 #include "tailcontrol.h"
+#include "leftmotor.h"
+#include "rightmotor.h"
+#include "gyrosensor.h"
 
 /* モーターポート */
 #define LEFT_MOTOR_P EV3_PORT_C
@@ -16,10 +19,10 @@
 
 void Linetrace_init() {
 	/* 走行モーターエンコーダ―リセット */
-	ev3_motor_reset_counts(LEFT_MOTOR_P);
-	ev3_motor_reset_counts(RIGHT_MOTOR_P);
+	LeftMotor_reset();
+	RightMotor_reset();
 
-	ev3_gyro_sensor_reset(GYRO_SENSOR_P); /* ジャイロセンサ―リセット */
+	GyroSensor_reset(); /* ジャイロセンサ―リセット */
 
 	balance_init(); /* 倒立振子API初期化 */
 }
@@ -43,9 +46,9 @@ void Linetrace_run() {
 		TailControl_control(TAIL_ANGLE_DRIVE);
 
 		/* 倒立振子制御API に渡すパラメーターを取得する */
-		motor_ang_l = ev3_motor_get_counts(LEFT_MOTOR_P);
-		motor_ang_r = ev3_motor_get_counts(RIGHT_MOTOR_P);
-		gyro = ev3_gyro_sensor_get_rate(GYRO_SENSOR_P);
+		motor_ang_l = LeftMotor_get_angle();
+		motor_ang_r = RightMotor_get_angle();
+		gyro = GyroSensor_get_rate();
 		volt = ev3_battery_voltage_mV();
 
 		backlash_cancel(pwm_L, pwm_R, &motor_ang_l, &motor_ang_r); /* バックラッシュキャンセル */
@@ -63,8 +66,9 @@ void Linetrace_run() {
 			(signed char*)&pwm_L,
 			(signed char*)&pwm_R);
 
-		set_tire_motor(LEFT_MOTOR_P, pwm_L); /* モーター停止時のブレーキ設定 */
-		set_tire_motor(RIGHT_MOTOR_P, pwm_R);
+		/* モーター停止時のブレーキ設定 */
+		LeftMotor_set_tire_motor(pwm_L);
+		RightMotor_set_tire_motor(pwm_R);
 		
 		tslp_tsk(4);
 	}
@@ -79,19 +83,4 @@ void backlash_cancel(signed char lpwm, signed char rpwm, int32_t *lenc, int32_t 
 
 	if (rpwm < 0) *renc += BACKLASHHALF;
 	else if (rpwm > 0) *renc -= BACKLASHHALF;
-}
-
-/* タイヤモータ出力制御 */
-void set_tire_motor(motor_port_t port, int8_t pwm)
-{
-	if (0x00 == pwm)
-	{
-		/* PWMが0である場合、モータ停止 */
-		ev3_motor_stop(port, true);
-	}
-	else
-	{
-		/* モータ出力 */
-		ev3_motor_set_power(port, (int)pwm);
-	}
 }

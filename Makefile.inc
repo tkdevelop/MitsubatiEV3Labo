@@ -1,1 +1,1 @@
-APPL_COBJS += runner.o calibration.o start.o tailcontrol.o balancer.o balancer_param.o linetrace.o touchsensor.o bluetooth.o colorsensor.o leftmotor.o rightmotor.o battery.o
+APPL_COBJS += runner.o calibration.o start.o tailcontrol.o balancer.o balancer_param.o linetrace.o touchsensor.o bluetooth.o colorsensor.o leftmotor.o rightmotor.o battery.o gyrosensor.o
