@@ -6,6 +6,7 @@
 #include "rightmotor.h"
 #include "gyrosensor.h"
 #include "pid.h"
+#include "touchsensor.h"
 
 Pid pid;
 
@@ -32,23 +33,30 @@ void Linetrace_init(int threshold) {
 }
 
 void Linetrace_run() {
-	int forward = 10; /* 前進値 */
+	int forward = 70; /* 前進値 */
 	int turn = 0; /* 旋回命令 */
 	signed char pwm_L, pwm_R; /* 左右モータPWM出力値 */
 	int32_t motor_ang_l, motor_ang_r; /* 左右モータエンコーダ値 */
 	int rate, /* ジャイロセンサ値 */
 		volt;  /* バッテリ電圧 */
 
+	char m[20];
+	FILE *logfile = fopen("/log.txt", "w");
+
 	/* 4msec周期で走行 */
 	while (1) {
-		if (ev3_button_is_pressed(BACK_BUTTON)) /* バックボタンで走行強制終了 */
+		if (ev3_button_is_pressed(BACK_BUTTON) || TouchSensor_is_pressed()) /* バックボタンで走行強制終了 */
 		{
+			fclose(logfile);
 			break;
 		}
 
 		TailControl_control(TAIL_ANGLE_DRIVE); /* テール制御 */
 
 		turn = Pid_calc(&pid); /* PID取得 */
+		sprintf(m, "pid :%3d", turn);
+		ev3_lcd_draw_string(m, 0, 110);
+		fprintf(logfile, "%d\r\n", turn);
 
 		/* 倒立振子制御API に渡すパラメータを取得する */
 		motor_ang_l = LeftMotor_get_angle();

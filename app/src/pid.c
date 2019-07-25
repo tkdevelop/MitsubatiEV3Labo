@@ -11,7 +11,7 @@
 void Pid_init(Pid* self, int threshold) {
 	self->threshold = threshold; /* è‡’l‰Šú‰» */
 
-	self->kp = 0.42; /* ƒQƒCƒ“‰Šú‰» */
+	self->kp = 0.78; /* ƒQƒCƒ“‰Šú‰» */
 	self->ki = 0.06;
 	self->kd = 0.027;
 
@@ -29,12 +29,27 @@ float Pid_calc(Pid* self) {
 
 	self->diff_prev = self->diff; /* ‘O‰ñ‚Ì•Î·‚ð•Û‘¶ */
 	self->diff = self->threshold - reflect; /* •Î·‚ðŒvŽZ */
-	
+	self->integral += ((self->diff + self->diff_prev) / 2.0) * self->delta;
+
 	/* PIDŒvŽZ */
 	int p = self->kp * self->diff;
-	self->integral += ((self->diff + self->diff_prev) / 2.0) * self->delta;
 	int i = self->ki * self->integral;
-	int d = self->kd * (self->diff_prev - self->diff) / self->delta;
+	int d = self->kd * (self->diff - self->diff_prev) / self->delta;
 
-	return (p + i + d);
+	/*if (reflect < self->threshold) { //ŠO‰ñ‚è
+		return -20;
+	}
+	else {
+		return 20;
+	}*/
+
+	/*if (reflect < self->threshold) { //“à‰ñ‚è
+		return 20;
+	}
+	else {
+		return -20;
+	}*/
+	
+	//return -(p + i + d); //ŠO‰ñ‚è
+	return (p + i + d); //“à‰ñ‚è
 }

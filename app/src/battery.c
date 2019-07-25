@@ -8,7 +8,7 @@ void Battery_display() {
 	int volt = Battery_get_voltage(); /* バッテリ電圧値を取得 */
 	char m[20]; /* 画面出力用 */
 
-	sprintf(m, "battery : %d%%", (int)(volt * 0.012453300124533));
+	sprintf(m, "battery :%3d%%", (int)(volt * 0.012453300124533));
 	ev3_lcd_draw_string(m, 0, 10);
 }
 
