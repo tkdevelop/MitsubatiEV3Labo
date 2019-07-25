@@ -1,5 +1,3 @@
-#include "target_test.h"
-
 #ifndef STACK_SIZE
 #define STACK_SIZE 4096
 #endif

@@ -1,10 +1,10 @@
 #include "ev3api.h"
 #include "tailcontrol.h"
 
-#define TAIL_MOTOR_P EV3_PORT_A /* テールモーターポート */
+#define TAIL_MOTOR_P EV3_PORT_A /* テールモータポート */
 
-#define P_GAIN             2.5F /* 完全停止用モーター制御比例係数 */
-#define PWM_ABS_MAX          60 /* 完全停止用モーター制御PWM絶対最大値 */
+#define P_GAIN             2.5F /* 完全停止用モータ制御比例係数 */
+#define PWM_ABS_MAX          60 /* 完全停止用モータ制御PWM絶対最大値 */
 
 /*
  * テール駆動メソッド

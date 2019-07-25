@@ -4,7 +4,7 @@
 #define COLOR_SENSOR_P EV3_PORT_3
 
 /*
- * カラーセンサー初期化メソッド
+ * カラーセンサ初期化メソッド
  */
 void ColorSensor_init() {
 	ev3_color_sensor_get_reflect(COLOR_SENSOR_P); /* 反射率モード */

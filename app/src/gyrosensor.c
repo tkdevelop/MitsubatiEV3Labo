@@ -1,17 +1,17 @@
 #include "ev3api.h"
 #include "gyrosensor.h"
 
-#define GYRO_SENSOR_P EV3_PORT_4 /* ジャイロセンサ―ポート */
+#define GYRO_SENSOR_P EV3_PORT_4 /* ジャイロセンサポート */
 
 /*
- * ジャイロセンサ―リセットメソッド
+ * ジャイロセンサリセットメソッド
  */
 void GyroSensor_reset() {
 	ev3_gyro_sensor_reset(GYRO_SENSOR_P);
 }
 
 /*
- * ジャイロセンサ―角速度取得メソッド
+ * ジャイロセンサ角速度取得メソッド
  *
  * return rate 角速度
  */

@@ -6,7 +6,7 @@
 
 Bluetooth bluetooth;
 
-#define TAIL_MOTOR_P EV3_PORT_A /* テールモーターポート */
+#define TAIL_MOTOR_P EV3_PORT_A /* テールモータポート */
 
 #define START_CMD 1 /* リモートスタート用コマンド */
 
@@ -26,12 +26,12 @@ void Start_init() {
  * 走行待機メソッド
  */
 void Start_wait() {
-	ev3_motor_reset_counts(TAIL_MOTOR_P); /* テールモーターリセット */
+	ev3_motor_reset_counts(TAIL_MOTOR_P); /* テールモータリセット */
 
-	/* リモートスタート又はタッチセンサーからスタート信号があるまで待機 */
+	/* リモートスタート又はタッチセンサからスタート信号があるまで待機 */
 	while (1) {
 
-		TailControl_control(TAIL_ANGLE_STAND_UP); /* テールモーター制御 */
+		TailControl_control(TAIL_ANGLE_STAND_UP); /* テールモータ制御 */
 
 		if (bluetooth.bt_cmd == START_CMD) {
 			break;
@@ -70,7 +70,7 @@ void Start_start() {
 }
 
 /*
- *Bluetooth通信タスク
+ * Bluetooth通信タスク
  */
 void Start_bluetooth_task() {
 	while (1) {

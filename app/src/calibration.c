@@ -3,7 +3,7 @@
 #include "tailcontrol.h"
 #include "colorsensor.h"
 
-#define TAIL_MOTOR_P EV3_PORT_A /* テールモーターポート */
+#define TAIL_MOTOR_P EV3_PORT_A /* テールモータポート */
 
 #define TAIL_ANGLE_CALIB (-90) /* キャリブレーション時テール角度 */
 
@@ -13,8 +13,8 @@
  * @param self 自分のポインタ
  */
 void Calibration_init(Calibration* self) {
-	ev3_motor_reset_counts(TAIL_MOTOR_P); /* テールモーター初期化 */
-	ColorSensor_init(); /* カラーセンサー初期化 */
+	ev3_motor_reset_counts(TAIL_MOTOR_P); /* テールモータ初期化 */
+	ColorSensor_init(); /* カラーセンサ初期化 */
 }
 
 /*
@@ -56,7 +56,7 @@ void Calibration_start(Calibration* self) {
 		tslp_tsk(10);
 	}
 
-	ev3_motor_reset_counts(TAIL_MOTOR_P); /* テールモーター初期化 */
+	ev3_motor_reset_counts(TAIL_MOTOR_P); /* テールモータ初期化 */
 
 	tslp_tsk(500);
 }

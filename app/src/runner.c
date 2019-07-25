@@ -7,28 +7,28 @@
 
 Calibration calibration;
 
-/* モーターポート */
+/* モータポート */
 #define LEFT_MOTOR_P EV3_PORT_C
 #define RIGHT_MOTOR_P EV3_PORT_B
 #define TAIL_MOTOR_P EV3_PORT_A
 
-/* センサーポート */
+/* センサポート */
 #define COLOR_SENSOR_P EV3_PORT_3
 #define TOUCH_SENSOR_P EV3_PORT_1
 #define GYRO_SENSOR_P EV3_PORT_4
 
 /*
  * 走行体初期化メソッド
- * 
+ *
  * @param self 自分のポインタ
  */
 void Runner_init() {
-	/* モーターポート設定 */
+	/* モータポート設定 */
 	ev3_motor_config(LEFT_MOTOR_P, LARGE_MOTOR);
 	ev3_motor_config(RIGHT_MOTOR_P, LARGE_MOTOR);
 	ev3_motor_config(TAIL_MOTOR_P, LARGE_MOTOR);
 
-	/* センサーポート設定 */
+	/* センサポート設定 */
 	ev3_sensor_config(COLOR_SENSOR_P, COLOR_SENSOR);
 	ev3_sensor_config(TOUCH_SENSOR_P, TOUCH_SENSOR);
 	ev3_sensor_config(GYRO_SENSOR_P, GYRO_SENSOR);
@@ -36,7 +36,7 @@ void Runner_init() {
 	/* LCD画面初期化 */
 	ev3_lcd_set_font(EV3_FONT_MEDIUM); /* ミディアムフォント */
 
-	act_tsk(RUNNER_BATTERY_TASK); /* バッテリー残量表示タスク開始 */
+	act_tsk(RUNNER_BATTERY_TASK); /* バッテリ残量表示タスク開始 */
 }
 
 /*
@@ -55,22 +55,22 @@ void Runner_start() {
 	Start_start();
 
 	/* 走行 */
-	Linetrace_init();
+	Linetrace_init(calibration.threshold);
 	Linetrace_run();
 
-	/* モーター出力停止 */
+	/* モータ出力停止 */
 	ev3_motor_stop(LEFT_MOTOR_P, false);
 	ev3_motor_stop(RIGHT_MOTOR_P, false);
 	ev3_motor_stop(TAIL_MOTOR_P, false);
 
-	ter_tsk(RUNNER_BATTERY_TASK); /* バッテリー残量表示タスク終了 */
+	ter_tsk(RUNNER_BATTERY_TASK); /* バッテリ残量表示タスク終了 */
 }
 
 /*
- * バッテリー残量表示タスク
+ * バッテリ残量表示タスク
  */
 void Runner_battery_task() {
 	while (1) {
-		Battery_display(); /* バッテリー残量表示 */
+		Battery_display(); /* バッテリ残量表示 */
 	}
 }
