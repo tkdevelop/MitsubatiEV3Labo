@@ -1,5 +1,5 @@
-#ifndef _PID_H_
-#define _PID_H_
+#ifndef _PIDCONTROL_H_
+#define _PIDCONTROL_H_
 
 typedef struct {
 	float kp; /* ƒQƒCƒ“ */
@@ -11,8 +11,8 @@ typedef struct {
 	float diff_prev; /* ‘O‰ñ‚Ì•Î· */
 
 	int threshold; /* è‡’l */
-}Pid;
-void Pid_init(Pid* self, int threshold);
-float Pid_calc(Pid* self);
+}PidControl;
+void PidControl_init(PidControl* self, int threshold);
+float PidControl_calc(PidControl* self);
 
 #endif

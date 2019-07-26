@@ -14,7 +14,7 @@ wheelmotor.o \
 battery.o \
 gyrosensor.o \
 balancecontrol.o \
-pid.o \
+pidcontrol.o \
 
 APPL_DIR += \
     $(mkfile_path)app/include \

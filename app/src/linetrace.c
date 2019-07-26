@@ -4,10 +4,10 @@
 #include "tailcontrol.h"
 #include "wheelmotor.h"
 #include "gyrosensor.h"
-#include "pid.h"
+#include "pidcontrol.h"
 #include "touchsensor.h"
 
-Pid pid;
+PidControl pidControl;
 
 /* モータポート */
 #define LEFT_MOTOR_P EV3_PORT_C
@@ -28,7 +28,7 @@ void Linetrace_init(int threshold) {
 
 	BalanceControl_balance_init(); /* 倒立振子API初期化 */
 
-	Pid_init(&pid, threshold); /* Pid初期化 */
+	PidControl_init(&pidControl, threshold); /* Pid初期化 */
 }
 
 void Linetrace_run() {
@@ -52,7 +52,7 @@ void Linetrace_run() {
 
 		TailControl_control(TAIL_ANGLE_DRIVE); /* テール制御 */
 
-		turn = Pid_calc(&pid); /* PID取得 */
+		turn = PidControl_calc(&pidControl); /* PID取得 */
 		sprintf(m, "pid :%3d", turn);
 		ev3_lcd_draw_string(m, 0, 110);
 		fprintf(logfile, "%d\r\n", turn);
