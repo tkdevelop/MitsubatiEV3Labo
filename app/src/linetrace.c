@@ -33,7 +33,7 @@ void Linetrace_init(int threshold) {
 }
 
 void Linetrace_run() {
-	int forward = 70; /* 前進値 */
+	int forward = 60; /* 前進値 */
 	int turn = 0; /* 旋回命令 */
 	signed char pwm_L, pwm_R; /* 左右モータPWM出力値 */
 	int32_t motor_ang_l, motor_ang_r; /* 左右モータエンコーダ値 */
