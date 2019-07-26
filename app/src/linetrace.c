@@ -2,8 +2,7 @@
 #include "linetrace.h"
 #include "balancecontrol.h"
 #include "tailcontrol.h"
-#include "leftmotor.h"
-#include "rightmotor.h"
+#include "wheelmotor.h"
 #include "gyrosensor.h"
 #include "pid.h"
 #include "touchsensor.h"
@@ -22,8 +21,8 @@ Pid pid;
 
 void Linetrace_init(int threshold) {
 	/* 走行モータエンコーダリセット */
-	LeftMotor_reset();
-	RightMotor_reset();
+	WheelMotor_reset(LEFT_MOTOR_P);
+	WheelMotor_reset(RIGHT_MOTOR_P);
 
 	GyroSensor_reset(); /* ジャイロセンサリセット */
 
@@ -59,8 +58,8 @@ void Linetrace_run() {
 		fprintf(logfile, "%d\r\n", turn);
 
 		/* 倒立振子制御API に渡すパラメータを取得する */
-		motor_ang_l = LeftMotor_get_angle();
-		motor_ang_r = RightMotor_get_angle();
+		motor_ang_l = WheelMotor_get_angle(LEFT_MOTOR_P);
+		motor_ang_r = WheelMotor_get_angle(RIGHT_MOTOR_P);
 		rate = GyroSensor_get_rate();
 		volt = ev3_battery_voltage_mV();
 
@@ -80,8 +79,8 @@ void Linetrace_run() {
 			(signed char*)&pwm_R);
 
 		/* モータ停止時のブレーキ設定 */
-		LeftMotor_set_tire_motor(pwm_L);
-		RightMotor_set_tire_motor(pwm_R);
+		WheelMotor_set_tire_motor(LEFT_MOTOR_P, pwm_L);
+		WheelMotor_set_tire_motor(RIGHT_MOTOR_P, pwm_R);
 
 		tslp_tsk(4);
 	}

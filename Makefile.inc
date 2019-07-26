@@ -10,8 +10,7 @@ linetrace.o \
 touchsensor.o \
 bluetooth.o \
 colorsensor.o \
-leftmotor.o \
-rightmotor.o \
+wheelmotor.o \
 battery.o \
 gyrosensor.o \
 balancecontrol.o \
