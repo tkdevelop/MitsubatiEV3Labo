@@ -7,11 +7,9 @@
 #include "pidcontrol.h"
 #include "touchsensor.h"
 #include "distance.h"
-#include "direction.h"
 
 PidControl pidControl;
 Distance distance;
-Direction direction;
 
 /* モータポート */
 #define LEFT_MOTOR_P EV3_PORT_C
@@ -35,7 +33,6 @@ void Linetrace_init(int threshold) {
 	PidControl_init(&pidControl, threshold); /* Pid制御初期化 */
 
 	Distance_init(&distance); /* 距離計初期化 */
-	Direction_init(&direction,&distance); /* 方位計初期化 */
 }
 
 void Linetrace_run() {
@@ -47,7 +44,6 @@ void Linetrace_run() {
 		volt;  /* バッテリ電圧 */
 
 	float distance_num = 0.0; /* 走行距離 */
-	float direction_num = 0.0; /* 方位 */
 
 	FILE *logfile = fopen("/log.txt", "w");
 
@@ -62,11 +58,9 @@ void Linetrace_run() {
 		TailControl_control(TAIL_ANGLE_DRIVE); /* テール制御 */
 
 		Distance_update(&distance); /* 距離計を更新 */
-		Direction_update(&direction); /* 方位計を更新 */
 
 		distance_num = Distance_get_distance(&distance); /* 走行距離取得 */
-		direction_num = Direction_get_direction(&direction); /* 方位取得 */
-		fprintf(logfile, "%lf : %lf\r\n", distance_num,direction_num);
+		fprintf(logfile, "%lf\r\n", distance_num);
 
 		turn = PidControl_calc(&pidControl); /* PID取得 */
 
