@@ -1,23 +1,23 @@
-#include "ev3api.h"
+ï»¿#include "ev3api.h"
 #include "battery.h"
 
 /*
- * ƒoƒbƒeƒŠc—Ê•\¦ƒƒ\ƒbƒh
+ * ãƒãƒƒãƒ†ãƒªæ®‹é‡è¡¨ç¤ºãƒ¡ã‚½ãƒƒãƒ‰
  */
 void Battery_display() {
-	int volt = Battery_get_voltage(); /* ƒoƒbƒeƒŠ“dˆ³’l‚ğæ“¾ */
-	char m[20]; /* ‰æ–Êo—Í—p */
+	int volt = Battery_get_voltage(); /* ãƒãƒƒãƒ†ãƒªé›»åœ§å€¤ã‚’å–å¾— */
+	char m[20]; /* ç”»é¢å‡ºåŠ›ç”¨ */
 
-	sprintf(m, "battery :%3d%%", (int)(volt * 0.012453300124533));
+	sprintf(m, "V :%4d/8395(%3d%%)", volt,(int)(volt * 0.0119118522930316)); /* å……é›»MAXæ™‚8395ã§æ›ç®—ã—ã¦å‰²åˆã‚’è¡¨ç¤º */
 	ev3_lcd_draw_string(m, 0, 10);
 }
 
 /*
- * ƒoƒbƒeƒŠ“dˆ³’læ“¾ƒƒ\ƒbƒh
+ * ãƒãƒƒãƒ†ãƒªé›»åœ§å€¤å–å¾—ãƒ¡ã‚½ãƒƒãƒ‰
  *
- * return volt ƒoƒbƒeƒŠ“dˆ³’l
+ * return volt ãƒãƒƒãƒ†ãƒªé›»åœ§å€¤
  */
 int Battery_get_voltage() {
-	int volt = ev3_battery_voltage_mV(); /* ƒoƒbƒeƒŠ“dˆ³’l‚ğæ“¾ */
+	int volt = ev3_battery_voltage_mV(); /* ãƒãƒƒãƒ†ãƒªé›»åœ§å€¤ã‚’å–å¾— */
 	return volt;
 }
