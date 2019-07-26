@@ -16,6 +16,7 @@ gyrosensor.o \
 balancecontrol.o \
 pidcontrol.o \
 distance.o \
+direction.o \
 
 APPL_DIR += \
     $(mkfile_path)app/include \

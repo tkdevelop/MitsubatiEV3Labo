@@ -10,11 +10,15 @@
 #define PI 3.14159265358979 /* 円周率 */
 
 /*
- * 自己位置推定初期化メソッド
+ * 距離計初期化メソッド
  *
  * @param self 自分のポインタ
  */
 void Distance_init(Distance* self) {
+	self->distance = 0.0;
+	self->distance_4ms_left = 0.0;
+	self->distance_4ms_right = 0.0;
+
 	/* 左右モータの過去値に現在地を代入 */
 	self->prev_angle_left = WheelMotor_get_angle(LEFT_MOTOR_P);
 	self->prev_angle_right = WheelMotor_get_angle(RIGHT_MOTOR_P);

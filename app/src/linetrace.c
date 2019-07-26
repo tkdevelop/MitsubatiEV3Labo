@@ -6,8 +6,12 @@
 #include "gyrosensor.h"
 #include "pidcontrol.h"
 #include "touchsensor.h"
+#include "distance.h"
+#include "direction.h"
 
 PidControl pidControl;
+Distance distance;
+Direction direction;
 
 /* モータポート */
 #define LEFT_MOTOR_P EV3_PORT_C
@@ -28,7 +32,10 @@ void Linetrace_init(int threshold) {
 
 	BalanceControl_balance_init(); /* 倒立振子API初期化 */
 
-	PidControl_init(&pidControl, threshold); /* Pid初期化 */
+	PidControl_init(&pidControl, threshold); /* Pid制御初期化 */
+
+	Distance_init(&distance); /* 距離計初期化 */
+	Direction_init(&direction,&distance); /* 方位計初期化 */
 }
 
 void Linetrace_run() {
@@ -39,7 +46,9 @@ void Linetrace_run() {
 	int rate, /* ジャイロセンサ値 */
 		volt;  /* バッテリ電圧 */
 
-	char m[20];
+	float distance_num = 0.0; /* 走行距離 */
+	float direction_num = 0.0; /* 方位 */
+
 	FILE *logfile = fopen("/log.txt", "w");
 
 	/* 4msec周期で走行 */
@@ -52,10 +61,14 @@ void Linetrace_run() {
 
 		TailControl_control(TAIL_ANGLE_DRIVE); /* テール制御 */
 
+		Distance_update(&distance); /* 距離計を更新 */
+		Direction_update(&direction); /* 方位計を更新 */
+
+		distance_num = Distance_get_distance(&distance); /* 走行距離取得 */
+		direction_num = Direction_get_direction(&direction); /* 方位取得 */
+		fprintf(logfile, "%lf : %lf\r\n", distance_num,direction_num);
+
 		turn = PidControl_calc(&pidControl); /* PID取得 */
-		sprintf(m, "pid :%3d", turn);
-		ev3_lcd_draw_string(m, 0, 110);
-		fprintf(logfile, "%d\r\n", turn);
 
 		/* 倒立振子制御API に渡すパラメータを取得する */
 		motor_ang_l = WheelMotor_get_angle(LEFT_MOTOR_P);
