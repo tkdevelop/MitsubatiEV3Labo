@@ -11,7 +11,6 @@
  * @param self Ž©•ª‚Ìƒ|ƒCƒ“ƒ^
  */
 void Distance_init(Distance* self) {
-	self-> pre
 }
 
 /*
