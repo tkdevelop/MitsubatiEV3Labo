@@ -3,11 +3,11 @@
 
 typedef struct {
 	float distance; /* 走行距離 */
-	float distance4msL; /* 左タイヤの4ms間の距離 */
-	float distance4msR; /* 右タイヤの4ms間の距離 */
+	float distance_4ms_left; /* 左タイヤの4ms間の距離 */
+	float distance_4ms_right; /* 右タイヤの4ms間の距離 */
 
-	float preAngleLeft; /* 前回の左モータ回転角度 */
-	float preAngleRight; /* 前回の右モータ回転角度 */
+	float pre_angle_left; /* 前回の左モータ回転角度 */
+	float pre_angle_right; /* 前回の右モータ回転角度 */
 }Distance;
 void Distance_init(Distance* self);
 void Distance_update(Distance* self);

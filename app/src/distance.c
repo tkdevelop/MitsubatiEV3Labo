@@ -11,7 +11,7 @@
  * @param self 自分のポインタ
  */
 void Distance_init(Distance* self) {
-
+	self-> pre
 }
 
 /*
@@ -37,7 +37,7 @@ float Distance_get_distance(Distance* self) {
  * 左タイヤの4ms間の距離取得メソッド
  *
  * @param self 自分のポインタ
- * return distance4msL 左タイヤの4ms間の距離
+ * return distance_4ms_left 左タイヤの4ms間の距離
  */
 float Distance_get_distance_4ms_left(Distance* self) {
 	return 0;
@@ -47,7 +47,7 @@ float Distance_get_distance_4ms_left(Distance* self) {
  * 右タイヤの4ms間距離取得メソッド
  *
  * @param self 自分のポインタ
- * return distance4msR 右タイヤの4ms間の距離
+ * return distance_4ms_right 右タイヤの4ms間の距離
  */
 float Distance_get_distance_4ms_right(Distance* self) {
 	return 0;
