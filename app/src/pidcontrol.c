@@ -9,13 +9,16 @@
  * @param threshold 閾値
  */
 void PidControl_init(PidControl* self, int threshold) {
-	self->threshold = threshold; /* 閾値初期化 */
-
 	self->kp = 0.78; /* ゲイン初期化 */
 	self->ki = 0.06;
 	self->kd = 0.027;
 
 	self->delta = 0.004; /* 周期初期化 */
+
+	self->diff = 0.0; /* 偏差初期化 */
+	self->prev_diff = 0.0;
+
+	self->threshold = threshold; /* 閾値初期化 */
 }
 
 /*
@@ -27,14 +30,14 @@ void PidControl_init(PidControl* self, int threshold) {
 float PidControl_calc(PidControl* self) {
 	uint8_t reflect = ColorSensor_get_reflect(); /* 反射光値取得 */
 
-	self->diff_prev = self->diff; /* 前回の偏差を保存 */
+	self->prev_diff = self->diff; /* 前回の偏差を保存 */
 	self->diff = self->threshold - reflect; /* 偏差を計算 */
-	self->integral += ((self->diff + self->diff_prev) / 2.0) * self->delta;
+	self->integral += ((self->diff + self->prev_diff) / 2.0) * self->delta;
 
 	/* PID計算 */
 	int p = self->kp * self->diff;
 	int i = self->ki * self->integral;
-	int d = self->kd * (self->diff - self->diff_prev) / self->delta;
+	int d = self->kd * (self->diff - self->prev_diff) / self->delta;
 
-	return (p + i + d); //内回り
+	return (p + i + d);
 }

@@ -8,7 +8,7 @@ typedef struct {
 	float delta; /* üŠú */
 	float integral; /* •Î·‚Ì—İÏ */
 	float diff; /* •Î· */
-	float diff_prev; /* ‘O‰ñ‚Ì•Î· */
+	float prev_diff; /* ‘O‰ñ‚Ì•Î· */
 
 	int threshold; /* è‡’l */
 }PidControl;

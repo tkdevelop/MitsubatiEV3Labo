@@ -7,8 +7,10 @@
  * @param self 自分のポインタ
  */
 void Bluetooth_connect(Bluetooth* self) {
-	self->bt_file = ev3_serial_open_file(EV3_SERIAL_BT);
+	self->bt_file = ev3_serial_open_file(EV3_SERIAL_BT); /* Bluetooth通信用ファイルオープン */
 	assert(self->bt_file != NULL);
+
+	self->bt_cmd = 0; /* 信号初期化 */
 }
 
 /*
