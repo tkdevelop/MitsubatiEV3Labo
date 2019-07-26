@@ -17,7 +17,7 @@ void Calibration_init(Calibration* self) {
 	self->white = 0;
 	self->threshold = 0;
 
-	ev3_motor_reset_counts(TAIL_MOTOR_P); /* テールモータ初期化 */
+	TailControl_reset(); /* テールモータリセット */
 	ColorSensor_init(); /* カラーセンサ初期化 */
 }
 
@@ -62,7 +62,7 @@ void Calibration_start(Calibration* self) {
 		tslp_tsk(10);
 	}
 
-	ev3_motor_reset_counts(TAIL_MOTOR_P); /* テールモータ初期化 */
+	TailControl_reset(); /* テールモータリセット */
 
 	tslp_tsk(500);
 }

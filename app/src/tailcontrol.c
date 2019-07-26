@@ -7,6 +7,13 @@
 #define PWM_ABS_MAX          60 /* 完全停止用モータ制御PWM絶対最大値 */
 
 /*
+ * テールモータリセットメソッド
+ */
+void TailControl_reset() {
+	ev3_motor_reset_counts(TAIL_MOTOR_P);
+}
+
+/*
  * テール駆動メソッド
  */
 void TailControl_control(signed int angle) {

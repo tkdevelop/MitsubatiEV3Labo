@@ -26,7 +26,7 @@ void Start_init() {
  * 走行待機メソッド
  */
 void Start_wait() {
-	ev3_motor_reset_counts(TAIL_MOTOR_P); /* テールモータリセット */
+	TailControl_reset(); /* テールモータリセット */
 
 	/* リモートスタート又はタッチセンサからスタート信号があるまで待機 */
 	while (1) {
