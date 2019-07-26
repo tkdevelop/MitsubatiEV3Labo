@@ -8,7 +8,7 @@
 #include "kernel_cfg.h"
 #endif
 
-void main_task(intptr_t exinf) {
+void main_task() {
 	/* 走行体プログラム実行 */
 	Runner_init();
 	Runner_start();
