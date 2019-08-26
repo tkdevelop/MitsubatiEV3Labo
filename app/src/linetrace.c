@@ -7,9 +7,13 @@
 #include "pidcontrol.h"
 #include "touchsensor.h"
 #include "distance.h"
+#include "scene.h"
+#include "runningstyle.h"
 
 PidControl pidControl;
 Distance distance;
+Scene scene;
+RunningStyle runningStyle;
 
 /* モータポート */
 #define LEFT_MOTOR_P EV3_PORT_C
@@ -21,7 +25,9 @@ Distance distance;
 #define TAIL_ANGLE_DRIVE      3 /* バランス走行時の角度 */
 #define FORWARD 40 /* 前進値 */
 
-void Linetrace_init(int threshold) {
+void Linetrace_init(Linetrace* self, int threshold) {
+	self->forward = 0; /* 前進値初期化 */
+
 	/* 走行モータエンコーダリセット */
 	WheelMotor_reset(LEFT_MOTOR_P);
 	WheelMotor_reset(RIGHT_MOTOR_P);
@@ -33,10 +39,13 @@ void Linetrace_init(int threshold) {
 	PidControl_init(&pidControl, threshold); /* Pid制御初期化 */
 
 	Distance_init(&distance); /* 距離計初期化 */
+
+	Scene_init(&scene); /* 区間初期化 */
+
+	RunningStyle_init(&runningStyle, self, &pidControl); /* 走法初期化 */
 }
 
-void Linetrace_run() {
-	int forward = 60; /* 前進値 */
+void Linetrace_run(Linetrace* self) {
 	int turn = 0; /* 旋回命令 */
 	signed char pwm_L, pwm_R; /* 左右モータPWM出力値 */
 	int32_t motor_ang_l, motor_ang_r; /* 左右モータエンコーダ値 */
@@ -44,8 +53,9 @@ void Linetrace_run() {
 		volt;  /* バッテリ電圧 */
 
 	float distance_num = 0.0; /* 走行距離 */
+	FILE *logfile = fopen("/log.txt", "w"); /* 走行距離のログを記述するファイル */
 
-	FILE *logfile = fopen("/log.txt", "w");
+	int scene_num = -1; /* 走行区間 */
 
 	/* 4msec周期で走行 */
 	while (1) {
@@ -62,6 +72,10 @@ void Linetrace_run() {
 		distance_num = Distance_get_distance(&distance); /* 走行距離取得 */
 		fprintf(logfile, "%lf\r\n", distance_num);
 
+		scene_num = Scene_get_scene(&scene, distance_num); /* 走行区間を取得 */
+
+		RunningStyle_switch(&runningStyle,scene_num); /* 走法切り替え */
+
 		turn = PidControl_calc(&pidControl); /* PID取得 */
 
 		/* 倒立振子制御API に渡すパラメータを取得する */
@@ -75,7 +89,7 @@ void Linetrace_run() {
 		/* 倒立振子制御APIを呼び出し、倒立走行するための */
 		/* 左右モータ出力値を得る */
 		BalanceControl_balance_control(
-			(float)forward,
+			(float)self->forward,
 			(float)turn,
 			(float)rate,
 			(float)GYRO_OFFSET,

@@ -9,9 +9,11 @@
  * @param threshold 閾値
  */
 void PidControl_init(PidControl* self, int threshold) {
-	self->kp = 0.78; /* ゲイン初期化 */
+	//self->kp = 0.78; /* ゲイン初期化 */
+	self->kp = 0.80; /* ゲイン初期化 */
 	self->ki = 0.06;
-	self->kd = 0.027;
+	//self->kd = 0.027;
+	self->kd = 0.025;
 
 	self->delta = 0.004; /* 周期初期化 */
 

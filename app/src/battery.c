@@ -8,7 +8,7 @@ void Battery_display() {
 	int volt = Battery_get_voltage(); /* バッテリ電圧値を取得 */
 	char m[20]; /* 画面出力用 */
 
-	sprintf(m, "V :%4d/8395(%3d%%)", volt,(int)(volt * 0.0119118522930316)); /* 充電MAX時8395で換算して割合を表示 */
+	sprintf(m, "Volt :%4d", volt);
 	ev3_lcd_draw_string(m, 0, 10);
 }
 

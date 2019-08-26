@@ -6,6 +6,7 @@
 #include "battery.h"
 
 Calibration calibration;
+Linetrace linetrace;
 
 /* モータポート */
 #define LEFT_MOTOR_P EV3_PORT_C
@@ -55,8 +56,8 @@ void Runner_start() {
 	Start_start();
 
 	/* 走行 */
-	Linetrace_init(calibration.threshold);
-	Linetrace_run();
+	Linetrace_init(&linetrace,calibration.threshold);
+	Linetrace_run(&linetrace);
 
 	/* モータ出力停止 */
 	ev3_motor_stop(LEFT_MOTOR_P, false);
