@@ -13,7 +13,6 @@
 PidControl pidControl;
 Distance distance;
 Scene scene;
-RunningStyle runningStyle;
 
 /* モータポート */
 #define LEFT_MOTOR_P EV3_PORT_C
@@ -41,8 +40,6 @@ void Linetrace_init(Linetrace* self, int threshold) {
 	Distance_init(&distance); /* 距離計初期化 */
 
 	Scene_init(&scene); /* 区間初期化 */
-
-	RunningStyle_init(&runningStyle, self, &pidControl); /* 走法初期化 */
 }
 
 void Linetrace_run(Linetrace* self) {
@@ -74,7 +71,7 @@ void Linetrace_run(Linetrace* self) {
 
 		scene_num = Scene_get_scene(&scene, distance_num); /* 走行区間を取得 */
 
-		RunningStyle_switch(&runningStyle,scene_num); /* 走法切り替え */
+		RunningStyle_switch(scene_num,self,&pidControl); /* 走法切り替え */
 
 		turn = PidControl_calc(&pidControl); /* PID取得 */
 

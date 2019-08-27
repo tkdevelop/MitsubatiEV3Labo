@@ -4,58 +4,119 @@
 #include "pidcontrol.h"
 
 /*
- * 走法クラス初期化メソッド
- *
- * @param self 自分のポインタ
- * @param pidControl PID制御クラスのポインタ
- */
-void RunningStyle_init(RunningStyle* self, Linetrace* linetrace, PidControl* pidControl) {
-	self->linetrace = linetrace; /* 走行くらうポインタ格納 */
-	self->pidControl = pidControl; /* PID制御クラスポインタ格納 */
-}
-
-/*
  * 走法切り替えメソッド
  *
  * @param self 自分のポインタ
  */
-void RunningStyle_switch(RunningStyle* self, int scene) {
+void RunningStyle_switch(int scene,Linetrace* linetrace,PidControl* pidControl) {
 	switch (scene) {
-	case 0:
-		self->linetrace->forward = 90;
-		self->pidControl->kp = 0.80;
-		self->pidControl->ki = 0.06;
-		self->pidControl->kd = 0.025;
+	case 0: /* 〇区間1 */
+		linetrace->forward = 100;
+		pidControl->kp = 0.25;
+		pidControl->ki = 0.03;
+		pidControl->kd = 0.020;
 		break;
-	case 1:
-		self->linetrace->forward = 90;
-		self->pidControl->kp = 0.80;
-		self->pidControl->ki = 0.06;
-		self->pidControl->kd = 0.025;
+	case 1: /* 〇区間2 */
+		linetrace->forward = 85;
+		pidControl->kp = 0.80;
+		pidControl->ki = 0.06;
+		pidControl->kd = 0.033;
 		break;
-	case 2:
-		self->linetrace->forward = 90;
-		self->pidControl->kp = 0.80;
-		self->pidControl->ki = 0.06;
-		self->pidControl->kd = 0.025;
+	case 2: /* 〇区間3 */
+		linetrace->forward = 100;
+		pidControl->kp = 0.25;
+		pidControl->ki = 0.03;
+		pidControl->kd = 0.020;
 		break;
-	case 3:
-		self->linetrace->forward = 90;
-		self->pidControl->kp = 0.80;
-		self->pidControl->ki = 0.06;
-		self->pidControl->kd = 0.025;
+	case 3: /* 〇区間4 */
+		linetrace->forward = 95;
+		pidControl->kp = 0.80;
+		pidControl->ki = 0.06;
+		pidControl->kd = 0.029;
 		break;
-	case 4:
-		self->linetrace->forward = 90;
-		self->pidControl->kp = 0.80;
-		self->pidControl->ki = 0.06;
-		self->pidControl->kd = 0.025;
+	case 4: /* 区間5 */
+		linetrace->forward = 100;
+		pidControl->kp = 0.42;
+		pidControl->ki = 0.03;
+		pidControl->kd = 0.027;
+		break;
+	case 5: /* 区間6 */
+		linetrace->forward = 90;
+		pidControl->kp = 0.80;
+		pidControl->ki = 0.06;
+		pidControl->kd = 0.029;
+		break;
+	case 6: /* 区間7 */
+		linetrace->forward = 95;
+		pidControl->kp = 0.80;
+		pidControl->ki = 0.06;
+		pidControl->kd = 0.025;
+		break;
+	case 7: /* 区間8 */
+		linetrace->forward = 95;
+		pidControl->kp = 0.80;
+		pidControl->ki = 0.06;
+		pidControl->kd = 0.027;
+		break;
+	case 8: /* 区間9 */
+		linetrace->forward = 95;
+		pidControl->kp = 0.25;
+		pidControl->ki = 0.03;
+		pidControl->kd = 0.025;
+		break;
+	case 9: /* 区間10 */
+		linetrace->forward = 95;
+		pidControl->kp = 0.80;
+		pidControl->ki = 0.06;
+		pidControl->kd = 0.027;
+		break;
+	case 10: /* 区間11 */
+		linetrace->forward = 100;
+		pidControl->kp = 0.25;
+		pidControl->ki = 0.03;
+		pidControl->kd = 0.025;
+		break;
+	case 11: /* 区間12 */
+		linetrace->forward = 90;
+		pidControl->kp = 0.80;
+		pidControl->ki = 0.06;
+		pidControl->kd = 0.027;
+		break;
+	case 12: /* 区間13 */
+		linetrace->forward = 100;
+		pidControl->kp = 0.25;
+		pidControl->ki = 0.03;
+		pidControl->kd = 0.025;
+		break;
+	case 13: /* 区間14 */
+		linetrace->forward = 90;
+		pidControl->kp = 0.80;
+		pidControl->ki = 0.06;
+		pidControl->kd = 0.029;
+		break;
+	case 14: /* 区間15 */
+		linetrace->forward = 95;
+		pidControl->kp = 0.80;
+		pidControl->ki = 0.06;
+		pidControl->kd = 0.027;
+		break;
+	case 15: /* 区間16 */
+		linetrace->forward = 90;
+		pidControl->kp = 0.80;
+		pidControl->ki = 0.06;
+		pidControl->kd = 0.027;
+		break;
+	case 16: /* 区間17 */
+		linetrace->forward -= 5;
+		pidControl->kp = 0.25;
+		pidControl->ki = 0.03;
+		pidControl->kd = 0.025;
 		break;
 	default:
-		self->linetrace->forward = 90;
-		self->pidControl->kp = 0.80;
-		self->pidControl->ki = 0.06;
-		self->pidControl->kd = 0.025;
+		linetrace->forward = 90;
+		pidControl->kp = 0.80;
+		pidControl->ki = 0.06;
+		pidControl->kd = 0.030;
 		break;
 	}
 }
