@@ -25,11 +25,12 @@ void Distance_init(Distance* self) {
 }
 
 /*
- * 距離更新メソッド
+ * 走行距離計算メソッド
  *
  * @param self 自分のポインタ
+ * @return distance 走行距離
  */
-void Distance_update(Distance* self) {
+float Distance_calc(Distance* self) {
 	/* 左右モータの回転角度を取得 */
 	float cur_angle_left = WheelMotor_get_angle(LEFT_MOTOR_P); 
 	float cur_angle_right = WheelMotor_get_angle(RIGHT_MOTOR_P);
@@ -45,14 +46,6 @@ void Distance_update(Distance* self) {
 	/* モータの回転角殿過去値を更新 */
 	self->prev_angle_left = cur_angle_left;
 	self->prev_angle_right = cur_angle_right;
-}
 
-/*
- * 走行距離取得メソッド
- *
- * @param self 自分のポインタ
- * return distance 走行距離 
- */
-float Distance_get_distance(Distance* self) {
 	return self->distance;
 }

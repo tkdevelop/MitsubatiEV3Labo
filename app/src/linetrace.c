@@ -62,9 +62,7 @@ void Linetrace_run(Linetrace* self) {
 
 		TailControl_control(TAIL_ANGLE_DRIVE); /* テール制御 */
 
-		Distance_update(&distance); /* 自己位置推定を更新 */
-
-		distance_num = Distance_get_distance(&distance); /* 走行距離取得 */
+		distance_num = Distance_calc(&distance); /* 走行距離計算 */
 
 		scene_num = Scene_get_scene(&scene, distance_num); /* 走行区間を取得 */
 

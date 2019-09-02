@@ -10,7 +10,6 @@ typedef struct {
 	float prev_angle_right; /* 前回の右モータ回転角度 */
 }Distance;
 void Distance_init(Distance* self);
-void Distance_update(Distance* self);
-float Distance_get_distance(Distance* self);
+float Distance_calc(Distance* self);
 
 #endif
