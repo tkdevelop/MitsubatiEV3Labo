@@ -12,7 +12,5 @@ typedef struct {
 void Distance_init(Distance* self);
 void Distance_update(Distance* self);
 float Distance_get_distance(Distance* self);
-float Distance_get_distance_4ms_right(Distance* self);
-float Distance_get_distance_4ms_left(Distance* self);
 
 #endif

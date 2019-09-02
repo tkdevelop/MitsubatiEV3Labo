@@ -9,12 +9,7 @@
  * @param threshold è‡’l
  */
 void PidControl_init(PidControl* self, int threshold) {
-	//self->kp = 0.78; org/* ƒQƒCƒ“‰Šú‰» */
-	//self->kp = 0.80;
-	//self->ki = 0.06; org
-	//self->kd = 0.027; org
-	//self->kd = 0.025;
-	self->kp = 0;
+	self->kp = 0; /* ƒQƒCƒ“‰Šú‰» */
 	self->ki = 0;
 	self->kd = 0;
 
