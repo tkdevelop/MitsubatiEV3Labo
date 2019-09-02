@@ -10,10 +10,9 @@ Bluetooth bluetooth;
 
 #define START_CMD 1 /* リモートスタート用コマンド */
 
-#define TAIL_ANGLE_STAND_UP 100 /* 完全停止時の角度[度] */
-#define TAIL_ANGLE_START  (TAIL_ANGLE_STAND_UP + 1) /* スタート時の角度 */
-#define START_DELAY_TIME  20 /* スタート遅延時間 */
-//#define START_DELAY_TIME  25 /* スタート遅延時間 */
+#define TAIL_ANGLE_STAND_UP 98 /* 完全停止時の角度[度] */
+#define TAIL_ANGLE_START  (TAIL_ANGLE_STAND_UP) /* スタート時の角度 */
+#define START_DELAY_TIME  25 /* スタート遅延時間 */
 
 /*
  * スタート初期化メソッド

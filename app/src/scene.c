@@ -14,32 +14,32 @@ void Scene_init(Scene* self) {
 
 /*
  * ‹æŠÔŽæ“¾ƒƒ\ƒbƒh
- *
+ 3
  * @param self Ž©•ª‚Ìƒ|ƒCƒ“ƒ^
  * @param distance ‘–s‹——£
  */
 int Scene_get_scene(Scene* self,float distance) {
-	if (self->scene == 0 && distance >= 500) { /* Z‹æŠÔ2“ž’B */
+	if (self->scene == 0 && distance >= 30) { /* Z‹æŠÔ2“ž’B */
 		ev3_speaker_play_tone(NOTE_C5, 300);
 		self->scene++;
 	}
-	else if (self->scene == 1 && distance >= 1300) { /* Z‹æŠÔ3“ž’B */
+	else if (self->scene == 1 && distance >= 510) { /* ‹æŠÔ3“ž’B */
 		ev3_speaker_play_tone(NOTE_C5, 300);
 		self->scene++;
 	}
-	else if (self->scene == 2 && distance >= 1800) { /* Z‹æŠÔ4“ž’B */
+	else if (self->scene == 2 && distance >= 1220) { /* Z‹æŠÔ4“ž’B */
 		ev3_speaker_play_tone(NOTE_C5, 300);
 		self->scene++;
 	}
-	else if (self->scene == 3 && distance >= 2500) { /* Z‹æŠÔ5“ž’B */
+	else if (self->scene == 3 && distance >= 1550) { /* Z‹æŠÔ5“ž’B */
 		ev3_speaker_play_tone(NOTE_C5, 300);
 		self->scene++;
 	}
-	else if (self->scene == 4 && distance >= 2600) { /* Z‹æŠÔ6“ž’B */
+	else if (self->scene == 4 && distance >= 2300) { /* Z‹æŠÔ6“ž’B */
 		ev3_speaker_play_tone(NOTE_C5, 300);
 		self->scene++;
 	}
-	else if (self->scene == 5 && distance >= 3300) { /* Z‹æŠÔ7“ž’B */
+	else if (self->scene == 5 && distance >= 2600) { /* Z‹æŠÔ7“ž’B */
 		ev3_speaker_play_tone(NOTE_C5, 300);
 		self->scene++;
 	}
@@ -47,39 +47,35 @@ int Scene_get_scene(Scene* self,float distance) {
 		ev3_speaker_play_tone(NOTE_C5, 300);
 		self->scene++;
 	}
-	else if (self->scene == 7 && distance >= 4200) { /* ‹æŠÔ9“ž’B */
+	else if (self->scene == 7 && distance >= 4600) { /* Z‹æŠÔ9“ž’B */
 		ev3_speaker_play_tone(NOTE_C5, 300);
 		self->scene++;
 	}
-	else if (self->scene == 8 && distance >= 4600) { /* ‹æŠÔ10“ž’B */
+	else if (self->scene == 8 && distance >= 4700) { /* Z‹æŠÔ10“ž’B */
 		ev3_speaker_play_tone(NOTE_C5, 300);
 		self->scene++;
 	}
-	else if (self->scene == 9 && distance >= 5000) { /* ‹æŠÔ11“ž’B */
+	else if (self->scene == 9 && distance >= 5700) { /* Z‹æŠÔ11“ž’B */
 		ev3_speaker_play_tone(NOTE_C5, 300);
 		self->scene++;
 	}
-	else if (self->scene == 10 && distance >= 6000) { /* £‹æŠÔ12“ž’B */
+	else if (self->scene == 10 && distance >= 6400) { /* Z‹æŠÔ12“ž’B */
+		ev3_speaker_play_tone(NOTE_A5, 300);
+		self->scene++;
+	}
+	else if (self->scene == 11 && distance >= 6800) { /* Z‹æŠÔ13“ž’B */
 		ev3_speaker_play_tone(NOTE_C5, 300);
 		self->scene++;
 	}
-	else if (self->scene == 11 && distance >= 3500) { /* ‹æŠÔ13“ž’B */
+	else if (self->scene == 12 && distance >= 7100) { /* Z‹æŠÔ14“ž’B */
 		ev3_speaker_play_tone(NOTE_C5, 300);
 		self->scene++;
 	}
-	else if (self->scene == 12 && distance >= 3500) { /* ‹æŠÔ14“ž’B */
+	else if (self->scene == 13 && distance >= 9150) { /* ‹æŠÔ15“ž’B */
 		ev3_speaker_play_tone(NOTE_C5, 300);
 		self->scene++;
 	}
-	else if (self->scene == 13 && distance >= 3500) { /* ‹æŠÔ15“ž’B */
-		ev3_speaker_play_tone(NOTE_C5, 300);
-		self->scene++;
-	}
-	else if (self->scene == 14 && distance >= 3500) { /* ‹æŠÔ16“ž’B */
-		ev3_speaker_play_tone(NOTE_C5, 300);
-		self->scene++;
-	}
-	else if (self->scene == 15 && distance >= 3500) { /* ‹æŠÔ17“ž’B */
+	else if (self->scene == 14 && distance >= 9450) { /* ‹æŠÔ16“ž’B */
 		ev3_speaker_play_tone(NOTE_C5, 300);
 		self->scene++;
 	}

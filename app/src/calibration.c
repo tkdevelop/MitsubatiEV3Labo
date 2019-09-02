@@ -13,9 +13,9 @@
  * @param self 自分のポインタ
  */
 void Calibration_init(Calibration* self) {
-	self->black = 0; /* 黒、白、閾値を初期化*/
-	self->white = 0;
-	self->threshold = 0;
+	self->black = 2; /* 黒、白、閾値を初期化*/
+	self->white = 33;
+	self->threshold = 17;
 
 	TailControl_reset(); /* テールモータリセット */
 	ColorSensor_init(); /* カラーセンサ初期化 */
