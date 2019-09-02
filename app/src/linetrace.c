@@ -50,7 +50,6 @@ void Linetrace_run(Linetrace* self) {
 		volt;  /* バッテリ電圧 */
 
 	float distance_num = 0.0; /* 走行距離 */
-	FILE *logfile = fopen("/log.txt", "w"); /* 走行距離のログを記述するファイル */
 
 	int scene_num = -1; /* 走行区間 */
 
@@ -58,7 +57,6 @@ void Linetrace_run(Linetrace* self) {
 	while (1) {
 		if (ev3_button_is_pressed(BACK_BUTTON) || TouchSensor_is_pressed()) /* バックボタンで走行強制終了 */
 		{
-			fclose(logfile);
 			break;
 		}
 
@@ -67,7 +65,6 @@ void Linetrace_run(Linetrace* self) {
 		Distance_update(&distance); /* 自己位置推定を更新 */
 
 		distance_num = Distance_get_distance(&distance); /* 走行距離取得 */
-		fprintf(logfile, "%lf\r\n", distance_num);
 
 		scene_num = Scene_get_scene(&scene, distance_num); /* 走行区間を取得 */
 
