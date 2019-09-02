@@ -37,7 +37,7 @@ void Linetrace_init(Linetrace* self, int threshold) {
 
 	PidControl_init(&pidControl, threshold); /* Pid制御初期化 */
 
-	Distance_init(&distance); /* 距離計初期化 */
+	Distance_init(&distance); /* 自己位置推定初期化 */
 
 	Scene_init(&scene); /* 区間初期化 */
 }
@@ -64,7 +64,7 @@ void Linetrace_run(Linetrace* self) {
 
 		TailControl_control(TAIL_ANGLE_DRIVE); /* テール制御 */
 
-		Distance_update(&distance); /* 距離計を更新 */
+		Distance_update(&distance); /* 自己位置推定を更新 */
 
 		distance_num = Distance_get_distance(&distance); /* 走行距離取得 */
 		fprintf(logfile, "%lf\r\n", distance_num);
