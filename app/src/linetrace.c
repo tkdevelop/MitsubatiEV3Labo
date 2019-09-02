@@ -70,7 +70,7 @@ void Linetrace_run(Linetrace* self) {
 
 		RunningStyle_switch(scene_num,self,&pidControl); /* 走法切り替え */
 
-		turn = PidControl_calc(&pidControl); /* PID取得 */
+		turn = PidControl_calc(&pidControl); /* 操作量取得 */
 
 		/* 倒立振子制御API に渡すパラメータを取得する */
 		motor_ang_l = WheelMotor_get_angle(LEFT_MOTOR_P);
