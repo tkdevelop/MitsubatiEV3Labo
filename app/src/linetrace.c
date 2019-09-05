@@ -9,10 +9,13 @@
 #include "distance.h"
 #include "scene.h"
 #include "runningstyle.h"
+#include "ultrasonic.h"
+#include "clock.h"
 
 PidControl pidControl;
 Distance distance;
 Scene scene;
+Clock clock;
 
 /* モータポート */
 #define LEFT_MOTOR_P EV3_PORT_C
@@ -20,8 +23,11 @@ Scene scene;
 #define TAIL_MOTOR_P EV3_PORT_A
 
 #define GYRO_OFFSET  0          /* ジャイロセンサオフセット値(角速度0[deg/sec]時) */
+#define GYRO_OFFSET_LOOKUP (-20)		/* ルックアップゲート攻略用ジャイロセンサオフセット値 */
 
 #define TAIL_ANGLE_DRIVE      3 /* バランス走行時の角度 */
+#define TAIL_ANGLE_STAND_UP_1	  87 /* ルックアップ攻略-完全停止時の角度1 */
+#define TAIL_ANGLE_STAND_UP_2	  70 /* ルックアップ攻略-完全停止時の角度2 */
 #define FORWARD 40 /* 前進値 */
 
 void Linetrace_init(Linetrace* self, int threshold) {
@@ -52,6 +58,7 @@ void Linetrace_run(Linetrace* self) {
 	float distance_num = 0.0; /* 走行距離 */
 
 	int scene_num = -1; /* 走行区間 */
+	char m[21];
 
 	/* 4msec周期で走行 */
 	while (1) {
@@ -66,7 +73,13 @@ void Linetrace_run(Linetrace* self) {
 
 		scene_num = Scene_get_scene(&scene, distance_num); /* 走行区間を取得 */
 
-		RunningStyle_switch(scene_num,self,&pidControl); /* 走法切り替え */
+		sprintf(m, "gate : %4d", Ultrasonic_get_distance());
+		ev3_lcd_draw_string(m, 0, 110);
+		if (8 > Ultrasonic_get_distance()) { /* ルックアップゲートの5cm手前に到達したらループを抜ける */
+			break;
+		}
+
+		RunningStyle_switch(scene_num, self, &pidControl); /* 走法切り替え */
 
 		turn = PidControl_calc(&pidControl); /* 操作量取得 */
 
@@ -96,5 +109,123 @@ void Linetrace_run(Linetrace* self) {
 		WheelMotor_set_tire_motor(RIGHT_MOTOR_P, pwm_R);
 
 		tslp_tsk(4);
+	}
+}
+
+void Linetrace_lookup(Linetrace* self) {
+	int turn = 0; /* 旋回命令 */
+	signed char pwm_L, pwm_R; /* 左右モータPWM出力値 */
+	int32_t motor_ang_l, motor_ang_r; /* 左右モータエンコーダ値 */
+	int rate, /* ジャイロセンサ値 */
+		volt;  /* バッテリ電圧 */
+
+	float distance_num = 0.0; /* 走行距離 */
+
+	int time = 0; /* タイム */
+	act_tsk(LINETRACE_TIMER_TASK); /* タイマータスク開始 */
+
+	int scene_num = -1; /* 走行区間 */
+	/* テールを下ろす */
+	while (1) {
+		if (ev3_button_is_pressed(BACK_BUTTON) || TouchSensor_is_pressed()) /* バックボタンで走行強制終了 */
+		{
+			break;
+		}
+
+		TailControl_control(TAIL_ANGLE_STAND_UP_1); /* テール制御 */
+
+		distance_num = Distance_calc(&distance); /* 走行距離計算 */
+
+		scene_num = Scene_get_scene(&scene, distance_num); /* 走行区間を取得 */
+
+		time = Clock_get_time(&clock); /* タイム取得 */
+		if (time > 150) { /* 0.1秒でテールを下す */
+			break;
+		}
+		else {
+
+			RunningStyle_switch(scene_num, self, &pidControl); /* 走法切り替え */
+
+			turn = PidControl_calc(&pidControl); /* 操作量取得 */
+
+			/* 倒立振子制御API に渡すパラメータを取得する */
+			motor_ang_l = WheelMotor_get_angle(LEFT_MOTOR_P);
+			motor_ang_r = WheelMotor_get_angle(RIGHT_MOTOR_P);
+			rate = GyroSensor_get_rate();
+			volt = ev3_battery_voltage_mV();
+
+			BalanceControl_backlash_cancel(pwm_L, pwm_R, &motor_ang_l, &motor_ang_r); /* バックラッシュキャンセル */
+
+			/* 倒立振子制御APIを呼び出し、倒立走行するための */
+			/* 左右モータ出力値を得る */
+			BalanceControl_balance_control(
+				(float)self->forward,
+				(float)turn,
+				(float)rate,
+				(float)GYRO_OFFSET_LOOKUP,
+				(float)motor_ang_l,
+				(float)motor_ang_r,
+				(float)volt,
+				(signed char*)&pwm_L,
+				(signed char*)&pwm_R);
+
+			/* モータ停止時のブレーキ設定 */
+			WheelMotor_set_tire_motor(LEFT_MOTOR_P, pwm_L);
+			WheelMotor_set_tire_motor(RIGHT_MOTOR_P, pwm_R);
+		}
+
+		tslp_tsk(4);
+	}
+	ter_tsk(LINETRACE_TIMER_TASK); /* タイマータスク終了 */
+
+	Clock_reset(&clock); /* タイマーリセット */
+	act_tsk(LINETRACE_TIMER_TASK); /* タイマータスク開始 */
+	/* ルックアップゲートを車体が通り過ぎるまで前進・後進をする */
+	while (1) {
+		if (ev3_button_is_pressed(BACK_BUTTON) || TouchSensor_is_pressed()) /* バックボタンで走行強制終了 */
+		{
+			break;
+		}
+
+		TailControl_control(TAIL_ANGLE_STAND_UP_2); /* テール制御 */
+
+		distance_num = Distance_calc(&distance); /* 走行距離計算 */
+
+		scene_num = Scene_get_scene(&scene, distance_num); /* 走行区間を取得 */
+
+		RunningStyle_switch(scene_num, self, &pidControl); /* 走法切り替え */
+
+		time = Clock_get_time(&clock); /* タイム取得 */
+		if (time < 1800) {
+			ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, 10, 0); /* 走行体を前進 */
+		}
+		else if (time < 7500) {
+			ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, -5, 0); /* 走行体を後進 */
+		}
+		else if (time < 12000) {
+			ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, 10, 0); /* 走行体を前進 */
+		}
+		else {
+			break;
+		}
+
+		tslp_tsk(4);
+	}
+	ter_tsk(LINETRACE_TIMER_TASK); /* タイマータスク終了 */
+}
+
+void Linetrace_garage(Linetrace* self) {
+	/*while (1) {
+
+	}*/
+}
+
+/*
+ * タイマータスク
+ */
+void Linetrace_timer_task() {
+	while (1) {
+		Clock_time_countup(&clock);
+		tslp_tsk(1);
 	}
 }

@@ -11,64 +11,64 @@
 void RunningStyle_switch(int scene,Linetrace* linetrace,PidControl* pidControl) {
 	switch (scene) {
 	case 0: /* ‹æŠÔ1 */
-		linetrace->forward = 30;
-		pidControl->kp = 0.84;
+		linetrace->forward = 60;
+		pidControl->kp = 0.78;
 		pidControl->ki = 0.06;
-		pidControl->kd = 0.033;
+		pidControl->kd = 0.040;
 		break;
 	case 1: /* Z‹æŠÔ2 */
-		linetrace->forward = 140;
-		pidControl->kp = 0.90;
+		linetrace->forward = 120;
+		pidControl->kp = 0.86;
 		pidControl->ki = 0.06;
-		pidControl->kd = 0.048;
+		pidControl->kd = 0.050;
 		break;
 	case 2: /* Z‹æŠÔ3 */
 		linetrace->forward = 150;
-		pidControl->kp = 1.04;
+		pidControl->kp = 1.40;
 		pidControl->ki = 0.06;
-		pidControl->kd = 0.068;
+		pidControl->kd = 0.084;
 		break;
 	case 3: /* Z‹æŠÔ4 */
-		linetrace->forward = 200;
-		pidControl->kp = 1.0;
+		linetrace->forward = 180;
+		pidControl->kp = 0.64;
 		pidControl->ki = 0.06;
-		pidControl->kd = 0.060;
+		pidControl->kd = 0.056;
 		break;
 	case 4: /* Z‹æŠÔ5 */
 		linetrace->forward = 150;
-		pidControl->kp = 1.1;
+		pidControl->kp = 1.40;
 		pidControl->ki = 0.06;
-		pidControl->kd = 0.060;
+		pidControl->kd = 0.084;
 		break;
 	case 5: /* ‹æŠÔ6 */
 		linetrace->forward = 120;
-		pidControl->kp = 0.84;
+		pidControl->kp = 0.90;
 		pidControl->ki = 0.06;
 		pidControl->kd = 0.040;
 		break;
 	case 6: /* ‹æŠÔ7 */
 		linetrace->forward = 120;
-		pidControl->kp = 1.04;
+		pidControl->kp = 1.45;
 		pidControl->ki = 0.06;
-		pidControl->kd = 0.062;
+		pidControl->kd = 0.084;
 		break;
 	case 7: /* ‹æŠÔ8 */
-		linetrace->forward = 150;
-		pidControl->kp = 1.04;
+		linetrace->forward = 130;
+		pidControl->kp = 1.30;
 		pidControl->ki = 0.06;
-		pidControl->kd = 0.062;
+		pidControl->kd = 0.078;
 		break;
 	case 8: /* ‹æŠÔ9 */
-		linetrace->forward = 150;
-		pidControl->kp = 0.92;
+		linetrace->forward = 130;
+		pidControl->kp = 1.0;
 		pidControl->ki = 0.06;
-		pidControl->kd = 0.047;
+		pidControl->kd = 0.048;
 		break;
 	case 9: /* ‹æŠÔ10 */
 		linetrace->forward = 150;
-		pidControl->kp = 0.91;
+		pidControl->kp = 1.20;
 		pidControl->ki = 0.06;
-		pidControl->kd = 0.048;
+		pidControl->kd = 0.070;
 		break;
 	case 10: /* ‹æŠÔ11 */
 		linetrace->forward = 170;
@@ -95,19 +95,16 @@ void RunningStyle_switch(int scene,Linetrace* linetrace,PidControl* pidControl) 
 		pidControl->kd = 0.037;
 		break;
 	case 14: /* ‹æŠÔ15 */
-		linetrace->forward = 200;
+		linetrace->forward = 180;
 		pidControl->kp = 0.25;
 		pidControl->ki = 0.03;
 		pidControl->kd = 0.025;
 		break;
-	case 15: /* ‹æŠÔ15 */
-		linetrace->forward -= 2;
-		if (linetrace->forward <= 0) {
-			linetrace->forward = 0;
-		}
-		pidControl->kp = 0.25;
+	case 15: /* ‹æŠÔ15 ƒS[ƒ‹Œã  */
+		linetrace->forward = 40;
+		pidControl->kp = 0.35;
 		pidControl->ki = 0.03;
-		pidControl->kd = 0.025;
+		pidControl->kd = 0.035;
 		break;
 	default:
 		linetrace->forward = 90;

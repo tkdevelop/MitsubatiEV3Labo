@@ -7,7 +7,7 @@
  * @param self 自分のポインタ
  */
 void Scene_init(Scene* self) {
-	self->scene = 0; /* 区間を初期化 */
+	self->scene = 15; /* 区間を初期化 */
 
 	ev3_speaker_set_volume(2); /* 音量設定 */
 }
@@ -72,10 +72,6 @@ int Scene_get_scene(Scene* self,float distance) {
 		self->scene++;
 	}
 	else if (self->scene == 13 && distance >= 9150) { /* 区間15到達 */
-		ev3_speaker_play_tone(NOTE_C5, 300);
-		self->scene++;
-	}
-	else if (self->scene == 14 && distance >= 9450) { /* 区間16到達 */
 		ev3_speaker_play_tone(NOTE_C5, 300);
 		self->scene++;
 	}

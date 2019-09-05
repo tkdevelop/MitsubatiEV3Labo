@@ -18,6 +18,8 @@ pidcontrol.o \
 distance.o \
 scene.o \
 runningstyle.o \
+ultrasonic.o \
+clock.o \
 
 APPL_DIR += \
     $(mkfile_path)app/include \

@@ -17,6 +17,7 @@ Linetrace linetrace;
 #define COLOR_SENSOR_P EV3_PORT_3
 #define TOUCH_SENSOR_P EV3_PORT_1
 #define GYRO_SENSOR_P EV3_PORT_4
+#define ULTRASONIC_SENSOR_P EV3_PORT_2
 
 /*
  * 走行体初期化メソッド
@@ -33,6 +34,7 @@ void Runner_init() {
 	ev3_sensor_config(COLOR_SENSOR_P, COLOR_SENSOR);
 	ev3_sensor_config(TOUCH_SENSOR_P, TOUCH_SENSOR);
 	ev3_sensor_config(GYRO_SENSOR_P, GYRO_SENSOR);
+	ev3_sensor_config(ULTRASONIC_SENSOR_P, ULTRASONIC_SENSOR);
 
 	/* LCD画面初期化 */
 	ev3_lcd_set_font(EV3_FONT_MEDIUM); /* ミディアムフォント */
@@ -58,6 +60,8 @@ void Runner_start() {
 	/* 走行 */
 	Linetrace_init(&linetrace,calibration.threshold);
 	Linetrace_run(&linetrace);
+	Linetrace_lookup(&linetrace);
+	Linetrace_garage(&linetrace);
 
 	/* モータ出力停止 */
 	ev3_motor_stop(LEFT_MOTOR_P, false);
