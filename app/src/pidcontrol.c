@@ -22,10 +22,10 @@ void PidControl_init(PidControl* self, int threshold) {
 }
 
 /*
- * PID取得メソッド
+ * 操作量取得メソッド
  *
  * @param self 自分のポインタ
- * @return (p+i+d) PID
+ * @return (p+i+d) 操作量
  */
 float PidControl_calc(PidControl* self) {
 	uint8_t reflect = ColorSensor_get_reflect(); /* 反射光値取得 */

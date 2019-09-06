@@ -11,6 +11,7 @@
 #include "runningstyle.h"
 #include "ultrasonic.h"
 #include "clock.h"
+#include "colorsensor.h"
 
 PidControl pidControl;
 Distance distance;
@@ -27,11 +28,12 @@ Clock clock;
 
 #define TAIL_ANGLE_DRIVE      3 /* バランス走行時の角度 */
 #define TAIL_ANGLE_STAND_UP_1	  87 /* ルックアップ攻略-完全停止時の角度1 */
-#define TAIL_ANGLE_STAND_UP_2	  70 /* ルックアップ攻略-完全停止時の角度2 */
+#define TAIL_ANGLE_STAND_UP_2	  75 /* ルックアップ攻略-完全停止時の角度2 */
 #define FORWARD 40 /* 前進値 */
 
 void Linetrace_init(Linetrace* self, int threshold) {
 	self->forward = 0; /* 前進値初期化 */
+	self->threshold = threshold; /* 閾値格納 */
 
 	/* 走行モータエンコーダリセット */
 	WheelMotor_reset(LEFT_MOTOR_P);
@@ -41,7 +43,7 @@ void Linetrace_init(Linetrace* self, int threshold) {
 
 	BalanceControl_balance_init(); /* 倒立振子API初期化 */
 
-	PidControl_init(&pidControl, threshold); /* Pid制御初期化 */
+	PidControl_init(&pidControl, self->threshold); /* Pid制御初期化 */
 
 	Distance_init(&distance); /* 自己位置推定初期化 */
 
@@ -139,7 +141,7 @@ void Linetrace_lookup(Linetrace* self) {
 		scene_num = Scene_get_scene(&scene, distance_num); /* 走行区間を取得 */
 
 		time = Clock_get_time(&clock); /* タイム取得 */
-		if (time > 150) { /* 0.1秒でテールを下す */
+		if (time > 200) { /* この間テールを下す */
 			break;
 		}
 		else {
@@ -180,6 +182,9 @@ void Linetrace_lookup(Linetrace* self) {
 
 	Clock_reset(&clock); /* タイマーリセット */
 	act_tsk(LINETRACE_TIMER_TASK); /* タイマータスク開始 */
+
+	uint8_t reflect = 0; /* 反射光値 */
+
 	/* ルックアップゲートを車体が通り過ぎるまで前進・後進をする */
 	while (1) {
 		if (ev3_button_is_pressed(BACK_BUTTON) || TouchSensor_is_pressed()) /* バックボタンで走行強制終了 */
@@ -189,21 +194,30 @@ void Linetrace_lookup(Linetrace* self) {
 
 		TailControl_control(TAIL_ANGLE_STAND_UP_2); /* テール制御 */
 
-		distance_num = Distance_calc(&distance); /* 走行距離計算 */
+		turn = 50;
 
-		scene_num = Scene_get_scene(&scene, distance_num); /* 走行区間を取得 */
+		reflect = ColorSensor_get_reflect(); /* 反射光値を取得 */
+		reflect += 15; /* カラーセンサーが傾く分補正 */
 
-		RunningStyle_switch(scene_num, self, &pidControl); /* 走法切り替え */
+		if (reflect > self->threshold) { /* 操作量をマイナスに設定 */
+			turn = -turn;
+		}
 
 		time = Clock_get_time(&clock); /* タイム取得 */
-		if (time < 1800) {
-			ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, 10, 0); /* 走行体を前進 */
+		if (time < 2900) {
+			ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, 10, turn); /* 走行体を前進 */
 		}
-		else if (time < 7500) {
-			ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, -5, 0); /* 走行体を後進 */
+		else if (time < 3600) {
+			ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, 10, 180); /* 走行体を180度回転 */
 		}
-		else if (time < 12000) {
-			ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, 10, 0); /* 走行体を前進 */
+		else if (time < 7900) {
+			ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, 10, turn); /* 走行体を前進 */
+		}
+		else if (time < 8800) {
+			ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, 10, 180); /* 走行体を180度回転 */
+		}
+		else if (time < 14000) {
+			ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, 10, turn); /* 走行体を前進 */
 		}
 		else {
 			break;
