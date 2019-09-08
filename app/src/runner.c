@@ -58,7 +58,7 @@ void Runner_start() {
 	Start_start();
 
 	/* ëñçs */
-	Linetrace_init(&linetrace,calibration.threshold);
+	Linetrace_init(&linetrace,calibration.threshold,calibration.lookup_threshold);
 	Linetrace_run(&linetrace);
 	Linetrace_lookup(&linetrace);
 	Linetrace_garage(&linetrace);
