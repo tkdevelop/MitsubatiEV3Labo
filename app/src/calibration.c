@@ -5,7 +5,8 @@
 
 #define TAIL_MOTOR_P EV3_PORT_A /* テールモータポート */
 
-#define TAIL_ANGLE_CALIB 75 /* キャリブレーション時テール角度 */
+#define TAIL_ANGLE_CALIB (-90) /* キャリブレーション時テール角度 */
+#define TAIL_ANGLE_STAND_UP_2 65 //87 /* ルックアップ攻略-完全停止時の角度2
 
 /*
  * キャリブレーション初期化メソッド
@@ -18,9 +19,8 @@ void Calibration_init(Calibration* self) {
 	self->threshold = 17;
 	self->lookup_threshold = 0;
 
-	ColorSensor_init(); /* カラーセンサー初期化 */
-
 	TailControl_reset(); /* テールモータリセット */
+	ColorSensor_init(); /* カラーセンサー初期化 */
 
 	ev3_speaker_set_volume(1); /* 音量設定 */
 }
@@ -58,7 +58,25 @@ void Calibration_start(Calibration* self) {
 			sprintf(m, "threshold : %2d", self->threshold);
 			ev3_lcd_draw_string(m, 0, 90);
 		}
-		else if (ev3_button_is_pressed(UP_BUTTON)) { /* ルックアップゲート攻略用閾値格納 */
+		else if (ev3_button_is_pressed(ENTER_BUTTON)) { /* キャリブレーション終了 */
+			ev3_speaker_play_tone(NOTE_C5, 1000);
+			break;
+		}
+		tslp_tsk(10);
+	}
+
+	TailControl_reset(); /* テールモータリセット */
+	tslp_tsk(500);
+
+	/* テールをルックアップゲート攻略用に下げてキャリブレーション */
+	while (1) {
+		TailControl_control(TAIL_ANGLE_STAND_UP_2); /* テール制御 */
+
+		reflect = ColorSensor_get_reflect(); /* 反射光値取得 */
+		sprintf(m, "reflect : %2d", reflect);
+		ev3_lcd_draw_string(m, 0, 30);
+
+		if (ev3_button_is_pressed(UP_BUTTON)) { /* ルックアップゲート攻略用閾値格納 */
 			self->lookup_threshold = reflect;
 			sprintf(m, "lookup : %2d", self->lookup_threshold);
 			ev3_lcd_draw_string(m, 0, 110);
@@ -67,10 +85,20 @@ void Calibration_start(Calibration* self) {
 			ev3_speaker_play_tone(NOTE_C5, 1000);
 			break;
 		}
-		tslp_tsk(4);
+		tslp_tsk(10);
 	}
 
 	TailControl_reset(); /* テールモータリセット */
-
 	tslp_tsk(500);
+
+	/* テールを戻す */
+	while (1) {
+		TailControl_control(TAIL_ANGLE_CALIB); /* テール制御 */
+
+		if (ev3_button_is_pressed(ENTER_BUTTON)) { /* キャリブレーション終了 */
+			ev3_speaker_play_tone(NOTE_C5, 1000);
+			break;
+		}
+		tslp_tsk(10);
+	}
 }

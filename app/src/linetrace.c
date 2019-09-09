@@ -27,9 +27,8 @@ Clock clock;
 #define GYRO_OFFSET_LOOKUP (-20)		/* ルックアップゲート攻略用ジャイロセンサオフセット値 */
 
 #define TAIL_ANGLE_DRIVE      3 /* バランス走行時の角度 */
-#define TAIL_ANGLE_STAND_UP_1	  87 //90 /* ルックアップ攻略-完全停止時の角度1 */
-#define TAIL_ANGLE_STAND_UP_2	  75 //87 /* ルックアップ攻略-完全停止時の角度2 */
-#define FORWARD 40 /* 前進値 */
+#define TAIL_ANGLE_STAND_UP_1	  90//87  /* ルックアップ攻略-完全停止時の角度1 */
+#define TAIL_ANGLE_STAND_UP_2	  87//75  /* ルックアップ攻略-完全停止時の角度2 */
 
 void Linetrace_init(Linetrace* self, int threshold,int lookup_threshold) {
 	self->forward = 0; /* 前進値初期化 */
@@ -65,7 +64,7 @@ void Linetrace_run(Linetrace* self) {
 
 	/* 4msec周期で走行 */
 	while (1) {
-		if (ev3_button_is_pressed(BACK_BUTTON) || TouchSensor_is_pressed()) /* バックボタンで走行強制終了 */
+		if (ev3_button_is_pressed(BACK_BUTTON)) /* バックボタンで走行強制終了 */
 		{
 			break;
 		}
@@ -129,7 +128,7 @@ void Linetrace_lookup(Linetrace* self) {
 	int scene_num = -1; /* 走行区間 */
 	/* テールを下ろす */
 	while (1) {
-		if (ev3_button_is_pressed(BACK_BUTTON) || TouchSensor_is_pressed()) /* バックボタンで走行強制終了 */
+		if (ev3_button_is_pressed(BACK_BUTTON)) /* バックボタンで走行強制終了 */
 		{
 			break;
 		}
@@ -187,7 +186,7 @@ void Linetrace_lookup(Linetrace* self) {
 
 	/* ルックアップゲートを車体が通り過ぎるまで前進・後進をする */
 	while (1) {
-		if (ev3_button_is_pressed(BACK_BUTTON) || TouchSensor_is_pressed()) /* バックボタンで走行強制終了 */
+		if (ev3_button_is_pressed(BACK_BUTTON)) /* バックボタンで走行強制終了 */
 		{
 			break;
 		}
@@ -240,7 +239,7 @@ void Linetrace_garage(Linetrace* self) {
 
 	/* 青のラインを探す */
 	while (1) {
-		if (ev3_button_is_pressed(BACK_BUTTON) || TouchSensor_is_pressed()) /* バックボタンで走行強制終了 */
+		if (ev3_button_is_pressed(BACK_BUTTON)) /* バックボタンで走行強制終了 */
 		{
 			break;
 		}

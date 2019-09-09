@@ -36,7 +36,6 @@ void Start_wait() {
 		if (bluetooth.bt_cmd == START_CMD) {
 			break;
 		}
-
 		if (TouchSensor_is_pressed()) {
 			break;
 		}
