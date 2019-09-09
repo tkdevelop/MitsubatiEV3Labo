@@ -17,7 +17,7 @@ void Calibration_init(Calibration* self) {
 	self->black = 2; /* 黒、白、閾値を初期化*/
 	self->white = 33;
 	self->threshold = 17;
-	self->lookup_threshold = 0;
+	self->lookup_threshold = 20;
 
 	TailControl_reset(); /* テールモータリセット */
 	ColorSensor_init(); /* カラーセンサー初期化 */

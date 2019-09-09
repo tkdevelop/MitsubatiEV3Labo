@@ -27,8 +27,9 @@ Clock clock;
 #define GYRO_OFFSET_LOOKUP (-20)		/* ルックアップゲート攻略用ジャイロセンサオフセット値 */
 
 #define TAIL_ANGLE_DRIVE      3 /* バランス走行時の角度 */
-#define TAIL_ANGLE_STAND_UP_1	  87//90//87  /* ルックアップ攻略-完全停止時の角度1 */
-#define TAIL_ANGLE_STAND_UP_2	  75//87//75  /* ルックアップ攻略-完全停止時の角度2 */
+#define TAIL_ANGLE_STAND_UP_1	  90//87  /* ルックアップ攻略-完全停止時の角度1 */
+#define TAIL_ANGLE_STAND_UP_2	  87//75  /* ルックアップ攻略-完全停止時の角度2 */
+#define TAIL_ANGLE_STAND_UP_3     95 /* ガレージ攻略-完全停止時の角度 */
 
 void Linetrace_init(Linetrace* self, int threshold,int lookup_threshold) {
 	self->forward = 0; /* 前進値初期化 */
@@ -231,8 +232,9 @@ void Linetrace_lookup(Linetrace* self) {
 
 void Linetrace_garage(Linetrace* self) {
 	colorid_t color = 0;
-	int turn = -50;
+	int turn = -25;
 	int time = 0;
+	bool_t first_turn = true; /* 一回目のturnかどうか */
 
 	Clock_reset(&clock); /* タイマーリセット */
 	act_tsk(LINETRACE_TIMER_TASK); /* タイマータスク開始 */
@@ -244,16 +246,25 @@ void Linetrace_garage(Linetrace* self) {
 			break;
 		}
 
-		TailControl_control(TAIL_ANGLE_STAND_UP_2); /* テール制御 */
+		TailControl_control(TAIL_ANGLE_STAND_UP_3); /* テール制御 */
 
 		color = ColorSensor_get_color(); /* カラー取得 */
+		char m[20];
+		sprintf(m, "color:%2d", color);
+		ev3_lcd_draw_string(m, 0, 110);
 		if (color == 2) { /* 青のラインに到達したらループを抜ける */
 			break;
 		}
 
 		time = Clock_get_time(&clock); /* タイム取得 */
 		if (700 < time) {
-			turn = -turn;
+			if (first_turn) { /* 1回目のみturnを50追加 */
+				turn = 50;
+				first_turn = false;
+			}
+			else {
+				turn = -turn;
+			}
 
 			ter_tsk(LINETRACE_TIMER_TASK); /* タイマータスク終了 */
 			Clock_reset(&clock); /* タイマーリセット */
@@ -264,6 +275,8 @@ void Linetrace_garage(Linetrace* self) {
 
 		tslp_tsk(4);
 	}
+
+	ev3_speaker_play_tone(NOTE_A4, 1000);
 }
 
 /*
