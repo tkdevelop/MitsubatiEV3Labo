@@ -27,8 +27,8 @@ Clock clock;
 #define GYRO_OFFSET_LOOKUP (-20)		/* ルックアップゲート攻略用ジャイロセンサオフセット値 */
 
 #define TAIL_ANGLE_DRIVE      3 /* バランス走行時の角度 */
-#define TAIL_ANGLE_STAND_UP_1	  90//87  /* ルックアップ攻略-完全停止時の角度1 */
-#define TAIL_ANGLE_STAND_UP_2	  87//75  /* ルックアップ攻略-完全停止時の角度2 */
+#define TAIL_ANGLE_STAND_UP_1	  87//90//87  /* ルックアップ攻略-完全停止時の角度1 */
+#define TAIL_ANGLE_STAND_UP_2	  75//87//75  /* ルックアップ攻略-完全停止時の角度2 */
 
 void Linetrace_init(Linetrace* self, int threshold,int lookup_threshold) {
 	self->forward = 0; /* 前進値初期化 */
@@ -196,7 +196,7 @@ void Linetrace_lookup(Linetrace* self) {
 		turn = 50;
 		
 		reflect = ColorSensor_get_reflect(); /* 反射光値を取得 */
-		//reflect *= 4; /* カラーセンサーが傾く分補正 */
+		reflect *= 10; /* 元データが小さく差が開かないためわざと差を広げる */
 
 		if (reflect > self->lookup_threshold) { /* 操作量をマイナスに設定 */
 			turn = -turn;

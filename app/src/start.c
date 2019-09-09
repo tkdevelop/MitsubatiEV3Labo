@@ -11,8 +11,8 @@ Bluetooth bluetooth;
 #define START_CMD 1 /* リモートスタート用コマンド */
 
 #define TAIL_ANGLE_STAND_UP 100 /* 完全停止時の角度[度] */
-#define TAIL_ANGLE_START  (TAIL_ANGLE_STAND_UP + 2) /* スタート時の角度 */
-#define START_DELAY_TIME  5 /* スタート遅延 */
+#define TAIL_ANGLE_START  (TAIL_ANGLE_STAND_UP + 3) /* スタート時の角度 */
+#define START_DELAY_TIME  25 /* スタート遅延 */
 
 /*
  * スタート初期化メソッド
@@ -40,7 +40,7 @@ void Start_wait() {
 			break;
 		}
 
-		tslp_tsk(10);
+		tslp_tsk(4);
 	}
 
 	ter_tsk(START_BLUETOOTH_TASK); /* Bluetooth信号受信タスク終了 */
@@ -64,7 +64,7 @@ void Start_start() {
 			break;
 		}
 
-		tslp_tsk(10);
+		tslp_tsk(4);
 	}
 }
 

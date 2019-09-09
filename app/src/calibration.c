@@ -33,7 +33,7 @@ void Calibration_init(Calibration* self) {
 void Calibration_start(Calibration* self) {
 	ev3_led_set_color(LED_ORANGE); /* キャリブレーション開始通知 */
 
-	uint8_t reflect = -1; /* 反射光値 */
+	uint8_t reflect = 0; /* 反射光値 */
 	char m[20]; /* 画面出力用 */
 
 	while (1) {
@@ -62,7 +62,7 @@ void Calibration_start(Calibration* self) {
 			ev3_speaker_play_tone(NOTE_C5, 1000);
 			break;
 		}
-		tslp_tsk(10);
+		tslp_tsk(4);
 	}
 
 	TailControl_reset(); /* テールモータリセット */
@@ -77,7 +77,7 @@ void Calibration_start(Calibration* self) {
 		ev3_lcd_draw_string(m, 0, 30);
 
 		if (ev3_button_is_pressed(UP_BUTTON)) { /* ルックアップゲート攻略用閾値格納 */
-			self->lookup_threshold = reflect;
+			self->lookup_threshold = reflect * 10;
 			sprintf(m, "lookup : %2d", self->lookup_threshold);
 			ev3_lcd_draw_string(m, 0, 110);
 		}
@@ -85,7 +85,7 @@ void Calibration_start(Calibration* self) {
 			ev3_speaker_play_tone(NOTE_C5, 1000);
 			break;
 		}
-		tslp_tsk(10);
+		tslp_tsk(4);
 	}
 
 	TailControl_reset(); /* テールモータリセット */
@@ -99,6 +99,6 @@ void Calibration_start(Calibration* self) {
 			ev3_speaker_play_tone(NOTE_C5, 1000);
 			break;
 		}
-		tslp_tsk(10);
+		tslp_tsk(4);
 	}
 }
