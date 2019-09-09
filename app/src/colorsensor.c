@@ -4,6 +4,13 @@
 #define COLOR_SENSOR_P EV3_PORT_3
 
 /*
+ * カラーセンサー初期化
+ */
+void ColorSensor_init() {
+	ev3_color_sensor_get_reflect(COLOR_SENSOR_P); /* RGBモード起動 */
+}
+
+/*
  * 反射光値取得メソッド
  *
  * return reflect 反射光値
