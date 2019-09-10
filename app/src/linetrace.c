@@ -12,9 +12,11 @@
 #include "ultrasonic.h"
 #include "clock.h"
 #include "colorsensor.h"
+#include "direction.h"
 
 PidControl pidControl;
 Distance distance;
+Direction direction;
 Scene scene;
 Clock clock;
 
@@ -29,9 +31,10 @@ Clock clock;
 #define TAIL_ANGLE_DRIVE      3 /* バランス走行時の角度 */
 #define TAIL_ANGLE_STAND_UP_1	  90//87  /* ルックアップ攻略-完全停止時の角度1 */
 #define TAIL_ANGLE_STAND_UP_2	  87//75  /* ルックアップ攻略-完全停止時の角度2 */
-#define TAIL_ANGLE_STAND_UP_3     95 /* ガレージ攻略-完全停止時の角度 */
+#define TAIL_ANGLE_STAND_UP_3     97 /* ガレージ攻略-完全停止時の角度3 */
+#define TAIL_ANGLE_STAND_UP_4     90 /* ガレージ攻略-完全停止時の角度4 */
 
-void Linetrace_init(Linetrace* self, int threshold,int lookup_threshold) {
+void Linetrace_init(Linetrace* self, int threshold, int lookup_threshold) {
 	self->forward = 0; /* 前進値初期化 */
 	self->threshold = threshold; /* 閾値格納 */
 	self->lookup_threshold = lookup_threshold; /* ルックアップゲート攻略用閾値 */
@@ -46,7 +49,9 @@ void Linetrace_init(Linetrace* self, int threshold,int lookup_threshold) {
 
 	PidControl_init(&pidControl, self->threshold); /* Pid制御初期化 */
 
-	Distance_init(&distance); /* 自己位置推定初期化 */
+	Distance_init(&distance); /* 距離計初期化 */
+
+	Direction_init(&direction); /* 方位計初期化 */
 
 	Scene_init(&scene); /* 区間初期化 */
 }
@@ -185,7 +190,7 @@ void Linetrace_lookup(Linetrace* self) {
 
 	uint8_t reflect = 0; /* 反射光値 */
 
-	/* ルックアップゲートを車体が通り過ぎるまで前進・後進をする */
+	/* ルックアップゲートを車体が通り過ぎるまで前進する */
 	while (1) {
 		if (ev3_button_is_pressed(BACK_BUTTON)) /* バックボタンで走行強制終了 */
 		{
@@ -194,50 +199,132 @@ void Linetrace_lookup(Linetrace* self) {
 
 		TailControl_control(TAIL_ANGLE_STAND_UP_2); /* テール制御 */
 
-		turn = 50;
-		
 		reflect = ColorSensor_get_reflect(); /* 反射光値を取得 */
-		reflect *= 10; /* 元データが小さく差が開かないためわざと差を広げる */
+		reflect *= 5; /* 元データが小さく差が開かないためわざと差を広げる */
+
+		turn = 50;
 
 		if (reflect > self->lookup_threshold) { /* 操作量をマイナスに設定 */
 			turn = -turn;
 		}
 
 		time = Clock_get_time(&clock); /* タイム取得 */
-		if (time < 2200) {
-			ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, 10, turn); /* 走行体を前進 */
-		}
-		else if (time < 3500) {
-			ev3_motor_set_power(LEFT_MOTOR_P, -10); /* 走行体を180度回転 */
-			ev3_motor_set_power(RIGHT_MOTOR_P, 10);
-		}
-		else if (time < 7400) {
-			ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, 10, turn); /* 走行体を前進 */
-		}
-		else if (time < 8800) {
-			ev3_motor_set_power(LEFT_MOTOR_P, -10); /* 走行体を180度回転 */
-			ev3_motor_set_power(RIGHT_MOTOR_P, 10);
-		}
-		else if (time < 15000) {
-			ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, 10, turn); /* 走行体を前進 */
-		}
-		else {
+		if (time > 2400) { /* 2.4秒後抜ける */
 			break;
 		}
+
+		ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, 10, turn); /* 走行体を前進 */
+
+		tslp_tsk(4);
+	}
+	ter_tsk(LINETRACE_TIMER_TASK); /* タイマータスク終了 */
+
+	Linetrace_rotate(-150.0); /* -150度回転 */
+
+	Clock_reset(&clock); /* タイマーリセット */
+	act_tsk(LINETRACE_TIMER_TASK); /* タイマータスク開始 */
+	/* ルックアップゲートを車体が通り過ぎるまで前進する */
+	while (1) {
+		if (ev3_button_is_pressed(BACK_BUTTON)) /* バックボタンで走行強制終了 */
+		{
+			break;
+		}
+
+		TailControl_control(TAIL_ANGLE_STAND_UP_2); /* テール制御 */
+
+		reflect = ColorSensor_get_reflect(); /* 反射光値を取得 */
+		reflect *= 5; /* 元データが小さく差が開かないためわざと差を広げる */
+
+		turn = 50;
+
+		if (reflect > self->lookup_threshold) { /* 操作量をマイナスに設定 */
+			turn = -turn;
+		}
+
+		time = Clock_get_time(&clock); /* タイム取得 */
+		if (time > 5000) { /* 5秒後抜ける */
+			break;
+		}
+
+		ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, 10, turn); /* 走行体を前進 */
+
+		tslp_tsk(4);
+	}
+	ter_tsk(LINETRACE_TIMER_TASK); /* タイマータスク終了 */
+
+	Linetrace_rotate(-160.0); /* -160度回転 */
+
+	Clock_reset(&clock); /* タイマーリセット */
+	act_tsk(LINETRACE_TIMER_TASK); /* タイマータスク開始 */
+	/* ルックアップゲートを車体が通り過ぎるまで前進する */
+	while (1) {
+		if (ev3_button_is_pressed(BACK_BUTTON)) /* バックボタンで走行強制終了 */
+		{
+			break;
+		}
+
+		TailControl_control(TAIL_ANGLE_STAND_UP_2); /* テール制御 */
+
+		reflect = ColorSensor_get_reflect(); /* 反射光値を取得 */
+		reflect *= 5; /* 元データが小さく差が開かないためわざと差を広げる */
+
+		turn = 50;
+
+		if (reflect > self->lookup_threshold) { /* 操作量をマイナスに設定 */
+			turn = -turn;
+		}
+
+		time = Clock_get_time(&clock); /* タイム取得 */
+		if (time > 7000) { /* 7秒後抜ける */
+			break;
+		}
+
+		ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, 10, turn); /* 走行体を前進 */
 
 		tslp_tsk(4);
 	}
 	ter_tsk(LINETRACE_TIMER_TASK); /* タイマータスク終了 */
 }
 
+void Linetrace_rotate(float angle) {
+	ev3_speaker_play_tone(NOTE_A4, 300);
+
+	float distance_4ms_left = 0.0; /* 左タイヤの4ms間の走行距離 */
+	float distance_4ms_right = 0.0; /* 右タイヤの4ms間の走行距離 */
+	float direction_num = 0.0; /* 方位 */
+	/* 回転する */
+	while (1) {
+		if (ev3_button_is_pressed(BACK_BUTTON)) /* バックボタンで走行強制終了 */
+		{
+			break;
+		}
+
+		TailControl_control(TAIL_ANGLE_STAND_UP_2); /* テール制御 */
+
+		Distance_calc(&distance); /* 走行距離計算 */
+		distance_4ms_left = Distance_get_distance_4ms_left(&distance);
+		distance_4ms_right = Distance_get_distance_4ms_right(&distance);
+
+		direction_num = Direction_calc(&direction, distance_4ms_left, distance_4ms_right); /* 方位を取得 */
+		char m[20];
+		sprintf(m, "dire : %4lf", direction_num);
+		ev3_lcd_draw_string(m, 0, 90);
+		if (direction_num < angle) {
+			break;
+		}
+
+		/* 車体を回転 */
+		ev3_motor_set_power(LEFT_MOTOR_P, -5);
+		ev3_motor_set_power(RIGHT_MOTOR_P, 5);
+
+		tslp_tsk(4);
+	}
+
+	Direction_reset(&direction); /* 方位をリセット */
+}
+
 void Linetrace_garage(Linetrace* self) {
 	colorid_t color = 0;
-	int turn = -25;
-	int time = 0;
-	bool_t first_turn = true; /* 一回目のturnかどうか */
-
-	Clock_reset(&clock); /* タイマーリセット */
-	act_tsk(LINETRACE_TIMER_TASK); /* タイマータスク開始 */
 
 	/* 青のラインを探す */
 	while (1) {
@@ -249,26 +336,77 @@ void Linetrace_garage(Linetrace* self) {
 		TailControl_control(TAIL_ANGLE_STAND_UP_3); /* テール制御 */
 
 		color = ColorSensor_get_color(); /* カラー取得 */
-		char m[20];
-		sprintf(m, "color:%2d", color);
-		ev3_lcd_draw_string(m, 0, 110);
-		if (color == 2) { /* 青のラインに到達したらループを抜ける */
+		if (color == 0) {
+			ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, 10, -50);
+		}
+		else if (color == 1) {
+			ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, 10, 50);
+		}
+		else if (color == 2) { /* 青のラインに到達したらループを抜ける */
 			break;
 		}
 
-		time = Clock_get_time(&clock); /* タイム取得 */
-		if (700 < time) {
-			if (first_turn) { /* 1回目のみturnを50追加 */
-				turn = 50;
-				first_turn = false;
-			}
-			else {
-				turn = -turn;
-			}
+		tslp_tsk(4);
+	}
 
-			ter_tsk(LINETRACE_TIMER_TASK); /* タイマータスク終了 */
-			Clock_reset(&clock); /* タイマーリセット */
-			act_tsk(LINETRACE_TIMER_TASK); /* タイマータスク開始 */
+	ter_tsk(LINETRACE_TIMER_TASK); /* タイマータスク終了 */
+	ev3_speaker_play_tone(NOTE_A4, 300);
+	tslp_tsk(100);
+
+	/* 青のラインから出る */
+	while (1) {
+		if (ev3_button_is_pressed(BACK_BUTTON)) /* バックボタンで走行強制終了 */
+		{
+			break;
+		}
+
+		TailControl_control(TAIL_ANGLE_STAND_UP_4); /* テール制御 */
+
+		color = ColorSensor_get_color(); /* カラー取得 */
+		if (color == 0) {
+			ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, -10, 50);
+		}
+		else if (color == 2) {
+			ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, -10, -50);
+		}
+		else if (color == 1) { /* 黒のラインに到達したらループを抜ける */
+			break;
+		}
+
+		tslp_tsk(4);
+	}
+
+	ev3_speaker_play_tone(NOTE_F4, 300);
+	tslp_tsk(100);
+
+	int turn = 0;
+
+	int reflect = 0; /* 反射光値 */
+
+	int start_distance = Distance_calc(&distance); /* ガレージ停車スタート位置走行距離 */
+	int now_distance = 0; /* 現在の走行距離 */
+	/* ガレージ停車位置まで前進 */
+	while (1) {
+		if (ev3_button_is_pressed(BACK_BUTTON)) /* バックボタンで走行強制終了 */
+		{
+			break;
+		}
+
+		TailControl_control(TAIL_ANGLE_STAND_UP_4); /* テール制御 */
+
+		now_distance = Distance_calc(&distance); /* 走行距離取得 */
+
+		if ((now_distance - start_distance) > 250) { /* 25cm前進したらループを抜ける */
+			break;
+		}
+
+		reflect = ColorSensor_get_reflect(); /* 反射光値を取得 */
+		reflect *= 5; /* 元データが小さく差が開かないためわざと差を広げる */
+
+		turn = 50;
+
+		if (reflect > self->lookup_threshold) { /* 操作量をマイナスに設定 */
+			turn = -50;
 		}
 
 		ev3_motor_steer(LEFT_MOTOR_P, RIGHT_MOTOR_P, 10, turn); /* 走行体を前進 */
@@ -276,7 +414,22 @@ void Linetrace_garage(Linetrace* self) {
 		tslp_tsk(4);
 	}
 
-	ev3_speaker_play_tone(NOTE_A4, 1000);
+	ev3_speaker_play_tone(NOTE_B4, 300);
+
+	/* 停車 */
+	while (1) {
+		if (ev3_button_is_pressed(BACK_BUTTON)) /* バックボタンで走行強制終了 */
+		{
+			break;
+		}
+
+		TailControl_control(TAIL_ANGLE_STAND_UP_4); /* テール制御 */
+
+		ev3_motor_stop(LEFT_MOTOR_P, false);
+		ev3_motor_stop(RIGHT_MOTOR_P, false);
+
+		tslp_tsk(4);
+	}
 }
 
 /*

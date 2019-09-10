@@ -20,6 +20,7 @@ scene.o \
 runningstyle.o \
 ultrasonic.o \
 clock.o \
+direction.o \
 
 APPL_DIR += \
     $(mkfile_path)app/include \

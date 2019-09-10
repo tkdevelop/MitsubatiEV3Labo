@@ -9,6 +9,7 @@ typedef struct {
 void Linetrace_init(Linetrace* self,int threshold,int lookup_threshold);
 void Linetrace_run(Linetrace* self);
 void Linetrace_lookup(Linetrace* self);
+void Linetrace_rotate(float angle);
 void Linetrace_garage(Linetrace* self);
 void Linetrace_timer_task();
 

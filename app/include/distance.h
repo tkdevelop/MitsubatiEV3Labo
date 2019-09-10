@@ -11,5 +11,7 @@ typedef struct {
 }Distance;
 void Distance_init(Distance* self);
 float Distance_calc(Distance* self);
+float Distance_get_distance_4ms_left(Distance* self);
+float Distance_get_distance_4ms_right(Distance* self);
 
 #endif

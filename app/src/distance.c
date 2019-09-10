@@ -49,3 +49,23 @@ float Distance_calc(Distance* self) {
 
 	return self->distance;
 }
+
+/*
+ * 左タイヤの4ms間の走行距離取得メソッド
+ *
+ * @param self 自分のポインタ
+ * @return distance_4ms_left 左タイヤの4ms間の走行距離
+ */
+float Distance_get_distance_4ms_left(Distance* self) {
+	return self->distance_4ms_left;
+}
+
+/*
+ * 右タイヤの4ms間の走行距離取得メソッド
+ *
+ * @param self 自分のポインタ
+ * @return distance_4ms_right 右タイヤの4ms間の走行距離
+ */
+float Distance_get_distance_4ms_right(Distance* self){
+	return self->distance_4ms_right;
+}
