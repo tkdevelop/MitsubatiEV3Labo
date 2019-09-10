@@ -101,10 +101,10 @@ void RunningStyle_switch(int scene,Linetrace* linetrace,PidControl* pidControl) 
 		pidControl->kd = 0.025;
 		break;
 	case 15: /* ‹æŠÔ15 ƒS[ƒ‹Œã  */
-		linetrace->forward = 40;
-		pidControl->kp = 0.78;
+		linetrace->forward = 45;
+		pidControl->kp = 0.76;
 		pidControl->ki = 0.06;
-		pidControl->kd = 0.048;
+		pidControl->kd = 0.042;
 		break;
 	default:
 		linetrace->forward = 90;

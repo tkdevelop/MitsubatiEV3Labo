@@ -6,7 +6,7 @@
 #define TAIL_MOTOR_P EV3_PORT_A /* テールモータポート */
 
 #define TAIL_ANGLE_CALIB (-90) /* キャリブレーション時テール角度 */
-#define TAIL_ANGLE_STAND_UP_2 65 //87 /* ルックアップ攻略-完全停止時の角度2
+#define TAIL_ANGLE_STAND_UP_2 75//65 /* ルックアップ攻略-完全停止時の角度2
 
 /*
  * キャリブレーション初期化メソッド
@@ -17,7 +17,7 @@ void Calibration_init(Calibration* self) {
 	self->black = 2; /* 黒、白、閾値を初期化*/
 	self->white = 33;
 	self->threshold = 17;
-	self->lookup_threshold = 20;
+	self->lookup_threshold = 5;
 
 	TailControl_reset(); /* テールモータリセット */
 	ColorSensor_init(); /* カラーセンサー初期化 */
@@ -77,7 +77,7 @@ void Calibration_start(Calibration* self) {
 		ev3_lcd_draw_string(m, 0, 30);
 
 		if (ev3_button_is_pressed(UP_BUTTON)) { /* ルックアップゲート攻略用閾値格納 */
-			self->lookup_threshold = reflect * 10;
+			self->lookup_threshold = reflect;
 			sprintf(m, "lookup : %2d", self->lookup_threshold);
 			ev3_lcd_draw_string(m, 0, 110);
 		}

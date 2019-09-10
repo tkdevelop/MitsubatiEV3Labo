@@ -59,8 +59,8 @@ void Runner_start() {
 
 	/* 走行 */
 	Linetrace_init(&linetrace,calibration.threshold,calibration.lookup_threshold);
-	//Linetrace_run(&linetrace);
-	//Linetrace_lookup(&linetrace);
+	Linetrace_run(&linetrace);
+	Linetrace_lookup(&linetrace);
 	Linetrace_garage(&linetrace);
 
 	/* モータ出力停止 */
